@@ -1,1 +1,6 @@
-# etis_cms_backend_final
+# Install dependencies
+npm install
+# Run app
+npm start
+ 
+ 

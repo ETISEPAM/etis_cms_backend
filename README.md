@@ -1,1 +1,8 @@
-# etis_cms_backend_final
+# API-JWT
+
+# Install dependencies
+npm install
+# Run app
+npm start
+ 
+ 

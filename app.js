@@ -8,10 +8,11 @@ const cors = require('cors');
 const app = express();
 //Middlewares
 app.use(bodyParser.urlencoded({
-extended:false
+extended:true
 }));
 
 app.use(bodyParser.json());
+
 app.use(cors());
 //setting the static directory
 app.use(express.static(path.join(__dirname, 'public')))
@@ -23,11 +24,12 @@ mongoose.connect(db, {useNewUrlParser:true} ).then(() =>{
 }).catch(err=>{
     console.log(`Unable to connect with the database ${err}`)
 });
+
 const users= require('./routes/api/users');
 app.use('/api/users',users);
 
-app.get('/', (req,res) =>{
-    return res.send("<h1>Success</h1>")
+app.get('/api/users/login', (req,res) =>{
+    return res.send(req.body)
 })
 
 

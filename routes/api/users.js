@@ -26,22 +26,9 @@ router.post('/login', (req,res)=>{
 
         //If there is user then check the password
             if(req.body.password== user.password){
-                const payload={
-                    __id: user.__id,
-                    username: user.username,
-                    password:user.password
-                
-                }
-                jwt.sign(payload,key,
-                    {expiresIn: 604800
-                    }, (err,token)=>{
-                            res.status(200).json({
-                                success: true,
-                                token: `Bearer ${token}`
-
-                            
-                            })
-                    })
+              
+                            generateToken(user,200,res);
+                   
 
             } else{
                return res.status(404).json({
@@ -56,5 +43,20 @@ router.post('/login', (req,res)=>{
         
     });
 
+const generateToken=async(user,statusCode,res)=>{
+    const token = jwt.sign({_id:user.id},process.env.JWT_SECRET)
+
+    const options={
+        httpOnly: true
+        
+    }
+
+    res.status(statusCode)
+    .cookie('token',token,options)
+    .json({ success:true,token})
+        return token
+    
+           
+}
 
 module.exports=router;

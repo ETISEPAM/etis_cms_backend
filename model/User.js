@@ -13,4 +13,8 @@ const UserSchema = new Schema({
         required:true
     }
 })
+
+//get the token
+
+   
 module.exports = User =mongoose.model('users',UserSchema);

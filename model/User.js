@@ -27,11 +27,18 @@ const UserSchema = new Schema({
         maxImgHeighT: Number,
     },
     userBio: String,
-    userContentType: Array,
+    //Connect ContentType to User
+    //TODO: Check if used right.  
+    userContentType: [{
+        type: Schema.ObjectId,
+        ref: 'ContentType'      
+    }],
     createdAt: {
         type: Date,
         default: Date.now
     },
-});
+
+}); 
+    
 
 module.exports = User =mongoose.model('users',UserSchema);

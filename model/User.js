@@ -7,10 +7,30 @@ const UserSchema = new Schema({
         type:String,
         required:true
     },
-  
+    email:{
+        type:String,
+        required:true,
+    },
     password:{
         type:String,
         required:true
-    }
-})
+    },
+    firstName: String,
+    lastName: String,
+    firstLogin: {
+        type: Boolean,
+    },
+    profileImage: {
+        imgSrc: String,
+        maxImgWidth: Number,
+        maxImgHeighT: Number,
+    },
+    userBio: String,
+    userContentType: Array,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+});
+
 module.exports = User =mongoose.model('users',UserSchema);

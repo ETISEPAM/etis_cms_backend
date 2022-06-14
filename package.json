@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "bcrypt-nodejs": "^0.0.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
     "concurrently": "^7.2.1",
@@ -23,6 +24,7 @@
     "morgan": "^1.10.0",
     "nodemon": "^2.0.16",
     "passport": "^0.6.0",
-    "passport-jwt": "^4.0.0"
+    "passport-jwt": "^4.0.0",
+    "salt": "^0.5.5"
   }
 }

@@ -18,11 +18,11 @@ const contentTypeSchema = new Schema({
   ownerId: {
     type: Schema.ObjectId,
     ref: 'User',
-    required: true,
+    // required: true,
   },
   version: {
     type: String,
-    required: true,
+    // required: true,
     default: "0.0.0"
   },
   contents: [{
@@ -44,7 +44,7 @@ const contentTypeSchema = new Schema({
   updatedBy: {
     type: Schema.ObjectId,
     ref: 'User',
-    default: ""
+    // default: ""
   }
 }); 
 

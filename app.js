@@ -27,8 +27,10 @@ mongoose.connect(process.env.DB_URI, {useNewUrlParser:true} ).then(() =>{
 });
 
 const users= require('./routes/api/users');
+const contentType= require('./routes/api/contenttype');
 
 app.use('/api/users', users);
+app.use('/api/contenttype', contentType);
 
 const PORT = process.env.PORT;
 app.listen(PORT, ()=>{

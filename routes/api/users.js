@@ -11,35 +11,37 @@ const salt = require('salt');
  * @access Public
  */
 router.post('/login', (req,res)=>{
-  const user =User.findOne({username: req.body.username, password:req.body.password});
+  User.findOne({username: req.body.username}).then(user=>{
+    if(!user){
+        return res.status(404).json({
+            msg:"User is not found",
+            success:"false",
+        });
+    }
+//compare the passwords, if they match call generateToken func and send token 
+    bcrypt.compare(req.body.password, user.password).then(isMatch => {
+        if(isMatch){
+            generateToken(user,200,res);
 
-        console.log(req.body.username)
+
+        }
+        else{
+            return res.status(404).json({
+             msg: "incorrect password",
+             success: false
+            });
+           
+         
+         }
+    })
+  })
+
        
 
-        if(!user){
-            return res.status(404).json({
-                msg:"User is not found",
-                success:"false",
-            });
-        }
+       
 
 
-        //If there is user then check the password
-           else if(req.body.password== user.password){
-              
-                            generateToken(user,200,res);
-                   
-
-            } else{
-               return res.status(404).json({
-                msg: "incorrect password",
-                success: false
-               });
-              
-            
-            }
-        
-                
+       
         
     });
 
@@ -74,7 +76,7 @@ let user = await User.findOne({username:username}).then(user=>{
 })
 
     //hash the password 
-bcrypt.genSalt(10, (err,salt)=>{
+    bcrypt.genSalt(10, (err,salt)=>{
     bcrypt.hash(newUser.password, salt,(err,hash)=>{
         //register new user 
    
@@ -103,7 +105,7 @@ bcrypt.genSalt(10, (err,salt)=>{
 
 
 
-
+//configure httponly cookie with the token
 const generateToken=async(user,statusCode,res)=>{
     const token = jwt.sign({_id:user.id},process.env.JWT_SECRET)
 

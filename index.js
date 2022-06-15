@@ -7,18 +7,26 @@ const mongoose = require("mongoose");
 const authRoute = require("./routes/auth");
 const postsRoute = require("./routes/posts");
 
-dotenv.config();
+dotenv.config({ path: "./config/config.env" });
+// dotenv.config();
 
 //Connect to mongo
-mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () =>
-  console.log("connected to db")
-);
+const db = mongoose.connection;
+mongoose
+  .connect(process.env.DB_URI, { useNewUrlParser: true })
+  .then(() => {
+    console.log(`Database connected  on '${db.host}' to DB: ${db.name}`);
+  })
+  .catch((err) => {
+    console.log(`Database connect failed ${err}`);
+  });
 
 //Middleware
 app.use(express.json());
 
 //Route Middlewares
-app.use("/api/user", authRoute);
+app.use("/", authRoute);
 app.use("/api/posts", postsRoute);
 
-app.listen(3000, () => console.log("Server running"));
+const PORT = process.env.PORT;
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));

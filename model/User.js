@@ -1,28 +1,45 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema({
+//create the user model
+const UserSchema = new Schema({
   username: {
     type: String,
     required: true,
-    min: 3,
-    max: 255,
+    unique: true,
   },
   email: {
     type: String,
-    require: true,
-    max: 255,
-    min: 6,
+    required: true,
+    unique: true,
   },
   password: {
     type: String,
     required: true,
-    max: 1024,
-    min: 6,
   },
-  createdDate: {
+  firstName: String,
+  lastName: String,
+  firstLogin: {
+    type: Boolean,
+  },
+  profileImage: {
+    imgSrc: String,
+    maxImgWidth: Number,
+    maxImgHeighT: Number,
+  },
+  userBio: String,
+  //Connect ContentType to User
+  //TODO: Check if used right.
+  userContentType: [
+    {
+      type: Schema.ObjectId,
+      ref: "ContentType",
+    },
+  ],
+  createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = User = mongoose.model("users", UserSchema);

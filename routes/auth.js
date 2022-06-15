@@ -23,7 +23,6 @@ router.post("/register", async (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: hashedPassword,
-    date: req,
   });
   try {
     const savedUser = await user.save();
@@ -34,14 +33,19 @@ router.post("/register", async (req, res) => {
 });
 
 //Login
-router.post("/login", async (req, res) => {
-  // validate the data before creating an user
+router.post("/", async (req, res) => {
+  //validate the data before creating an user
   const { error } = loginValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
+  //Checking if the user exists
+  const user = await User.findOne({ username: req.body.username });
+  if (!user) return res.status(400).send("Username is not found");
+
   //Checking if the email exists
-  const user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(400).send("Email is not found");
+
+  const emailExist = await User.findOne({ email: req.body.email });
+  if (!emailExist) return res.status(400).send("email is not found");
 
   //Password is Correct
   const validPass = await bcrypt.compare(req.body.password, user.password);
@@ -50,7 +54,6 @@ router.post("/login", async (req, res) => {
   //Create and assign a token
   const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
   res.header("auth-token", token).send(token);
-
   //   res.send("Logged in!");
 });
 

@@ -26,6 +26,12 @@ router.post('/', (req, res) => {
     
 });
 
-// router.post('/fields', )
+
+//TODO Add fields to content-type
+router.post('/fields', (req, res) => {
+
+});
+
+
 
 module.exports = router;

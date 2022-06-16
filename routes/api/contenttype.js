@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
                 })
             }
              else {
-                console.log('Failed to retrieve the Course List: ' + err);
+                console.log('Failed to retrieve the Content Type List: ' + err);
             }
         });
     });

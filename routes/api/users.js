@@ -56,6 +56,7 @@ router.post("/register", async (req, res) => {
       });
     }
   });
+  //Adding the user
   const newUser = new User({
     username,
     firstName,

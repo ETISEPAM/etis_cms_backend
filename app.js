@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const path = require('path');
 const cors = require('cors');
 
 // initialize the app
@@ -12,8 +11,8 @@ const app = express();
 dotenv.config({ path: "./config/config.env" });
 
 //Middlewares
+app.use(express.json());
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(bodyParser.json());
 app.use(cors());
 
 
@@ -27,11 +26,11 @@ mongoose.connect(process.env.DB_URI, {useNewUrlParser:true} ).then(() =>{
 });
 
 const users= require('./routes/api/users');
-const contentType= require('./routes/api/contenttype');
+const contentType= require('./routes/api/contentType');
+
 
 app.use('/api/users', users);
 app.use('/api/contenttype', contentType);
-
 const PORT = process.env.PORT;
 app.listen(PORT, ()=>{
     console.log(`Server started on port ${PORT}`);

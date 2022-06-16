@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const ContentType= require('../../models/ContentType');
+const ContentType= require('../../model/ContentType');
 
 
 router.post('/', (req, res) => {
@@ -8,7 +8,7 @@ router.post('/', (req, res) => {
     ContentType.findOne({name: name})
     .then(contentType => {
         if(contentType) {
-            return res.status(400).json({
+            return res.status(409).json({
                 msg: "Content Type Already Exists!"
             })
         } else {
@@ -23,15 +23,32 @@ router.post('/', (req, res) => {
         }
     })
 
-    
 });
+//Get the Content Types
+    router.get('/', function(req, res, next) {
+      
+        ContentType.find((err, docs) => {
+            if (!err) {
+                // console.log(docs)
+                let contentTypeNameList = [];
+                docs.forEach((item) => {
+                    contentTypeNameList.push(item.name);
+                })
+                return res.status(201).json({
+                    contentTypeNameList
+                })
+            }
+             else {
+                return res.status(404).json({
+                    msg: "Failed to retrieve content type list"
+                })
+                // console.log('Failed to retrieve the Content Type List: ' + err);
+            }
+        });
+    });
+     
 
 
-//TODO Add fields to content-type
-router.post('/fields', (req, res) => {
-
-});
-
-
+// router.post('/fields', )
 
 module.exports = router;

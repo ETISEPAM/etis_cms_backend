@@ -7,6 +7,7 @@ module.exports=(req,res,next)=>{
         console.log(token)
 
 
+
         //  Return response with decode data
         if(token){
              // Verify the token using jwt.verify method
@@ -19,6 +20,10 @@ module.exports=(req,res,next)=>{
 
         else{
 
+
+      
+        else{
+ 
             // Return response with error
             return res.status(401).json({
                 message:"Restricted"
@@ -28,3 +33,8 @@ module.exports=(req,res,next)=>{
 
 }
 } 
+ 
+        //  Return response with decode data
+      
+}
+}

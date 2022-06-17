@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const ContentType= require('../../model/ContentType');
+const checkAuth = require("../api/middleware/check-auth");
 
 
-router.post('/', (req, res) => {
+router.post('/', checkAuth, (req, res) => {
     let { name, description } = req.body
     ContentType.findOne({name: name})
     .then(contentType => {
@@ -25,7 +26,7 @@ router.post('/', (req, res) => {
 
 });
 //Get the Content Types
-    router.get('/', function(req, res, next) {
+    router.get('/', checkAuth,function(req, res, next) {
       
         ContentType.find((err, docs) => {
             if (!err) {

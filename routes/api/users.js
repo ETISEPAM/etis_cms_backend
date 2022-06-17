@@ -4,7 +4,7 @@ const User = require("../../model/User");
 const bcrypt = require("bcrypt");
 const { registerValidation } = require("../../utils/validation");
 const { generateToken } = require("../../utils/tokenGen");
-
+const checkAuth = require("../api/middleware/check-auth");
 /**
  * @route POST api/users/login
  * @des Signing in the admin
@@ -34,9 +34,14 @@ router.post("/", async (req, res) => {
 /**
  * @route POST api/users/register
  * @des Signing up the admin
- * @access Public
+ * @access Private
  */
-router.post("/registrtaion", async (req, res) => {
+
+
+//restrict the route with token verify
+router.post("/register", checkAuth, async (req, res) => {
+
+
   // validate the data before creating an user
   const { error } = registerValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);

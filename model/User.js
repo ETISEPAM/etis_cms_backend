@@ -37,6 +37,12 @@ const UserSchema = new Schema({
     maxImgWidth: Number,
     maxImgHeight: Number,
   },
+  role: {
+    type:String,
+    required:true,
+    enum: ["admin","user"]
+
+  },
   userBio: {
     type: String,
     default: "Bio",

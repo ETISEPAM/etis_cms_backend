@@ -3,7 +3,7 @@ module.exports=(req,res,next)=>{
  
     // If the token is present
     
-        const token = req.body.token;
+        const token = (req.headers.token);
         console.log(token)
     
        
@@ -12,8 +12,8 @@ module.exports=(req,res,next)=>{
              // Verify the token using jwt.verify method
         const decode = jwt.verify(token, process.env.JWT_SECRET);
             res.json({
-                msg: "This route is available ",
-                data: decode
+                message: "This route is available "
+                
             });
         }
       

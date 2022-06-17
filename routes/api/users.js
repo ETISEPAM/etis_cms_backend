@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const { registerValidation } = require("../../utils/validation");
 const { generateToken } = require("../../utils/tokenGen");
 const checkAuth = require("../api/middleware/check-auth");
+
 /**
  * @route POST api/users/login
  * @des Signing in the admin
@@ -21,7 +22,8 @@ router.post("/", async (req, res) => {
   //checks pw
   bcrypt.compare(req.body.password, user.password).then((isMatch) => {
     if (isMatch) {
-      generateToken(user, 200, res);
+      generateToken(user, 201, res);
+      
     } else {
       return res.status(403).json({
         msg: "Incorrect Password",
@@ -34,6 +36,8 @@ router.post("/", async (req, res) => {
 /**
  * @route POST api/users/register
  * @des Signing up the admin
+
+router.post("/registration", async (req, res) => {
  * @access Private
  */
 

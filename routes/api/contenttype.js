@@ -5,6 +5,7 @@ const checkAuth = require("../api/middleware/check-auth");
 
 
 
+
 //create content type
 
 router.post('/', checkAuth, (req, res) => {
@@ -28,6 +29,9 @@ router.post('/', checkAuth, (req, res) => {
     })
 
 });
+//Get the Content Types
+    router.get('/', checkAuth,function(req, res, next) {
+
 
 
 

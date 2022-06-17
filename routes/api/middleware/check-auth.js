@@ -3,7 +3,7 @@ module.exports=(req,res,next)=>{
 
     // If the token is present
 
-        const token = req.body.token;
+        const token = req.headers.token;
         console.log(token)
 
 

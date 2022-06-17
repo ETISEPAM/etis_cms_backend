@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
   //checks pw
   bcrypt.compare(req.body.password, user.password).then((isMatch) => {
     if (isMatch) {
-      generateToken(user, 200, res);
+      generateToken(user, 201, res);
     } else {
       return res.status(403).json({
         msg: "Incorrect Password",

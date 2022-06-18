@@ -43,6 +43,7 @@ router.get('/', checkAuth, function(req, res, next) {
         }
     });
 });
+
 //Add Field to Content Type
 router.post('/field', (req, res) => {
 })

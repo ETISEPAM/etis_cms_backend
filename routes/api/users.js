@@ -23,6 +23,7 @@ router.post("/", async (req, res) => {
   bcrypt.compare(req.body.password, user.password).then((isMatch) => {
     if (isMatch) {
       generateToken(user, 201, res);
+      
     } else {
       return res.status(403).json({
         msg: "Incorrect Password",
@@ -35,9 +36,16 @@ router.post("/", async (req, res) => {
 /**
  * @route POST api/users/register
  * @des Signing up the admin
- * @access Public
- */
+
 router.post("/registration", async (req, res) => {
+ * @access Private
+ */
+
+
+//restrict the route with token verify
+router.post("/register", checkAuth, async (req, res) => {
+
+
   // validate the data before creating an user
   const { error } = registerValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);

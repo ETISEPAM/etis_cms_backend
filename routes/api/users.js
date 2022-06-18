@@ -93,8 +93,7 @@ router.get('/', (req, res) => {
   })
 });
 
-//Update User
-
+//UPDATE User
 //TODO - CHECK params given in fromt +  CHECK LOGIC
 router.patch('/:username', /*checkAuth,*/ (req, res) => {
   let query = {
@@ -111,10 +110,29 @@ router.patch('/:username', /*checkAuth,*/ (req, res) => {
       })
     }
   })
+  /*
+   Will be added to the query depending on the front form params (What can be updated on front?)
+        |___{firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, username : req.body.username, role: req.body.role}
+  */
+  });
 
-  // {firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, username : req.body.username, role: req.body.role}
-});
-
+//DELETE User
+router.delete('/:username', /*checkAuth,*/ (req, res) => {
+  let query = {
+    username: req.params.username
+  }
+  User.findOneAndDelete(query, (err, docs) => {
+    if(err || !docs) {
+      return res.status(400).json({
+        msg: "User not Found"
+      })
+    } else {
+      return res.status(200).json({
+        msg: "User Deleted Successfully!"
+      })
+    }
+  })
+})
 
 
 

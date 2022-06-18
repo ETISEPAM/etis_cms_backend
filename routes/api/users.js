@@ -33,17 +33,8 @@ router.post("/", async (req, res) => {
   });
 });
 
-/**
- * @route POST api/users/register
- * @des Signing up the admin
-
-router.post("/registration", async (req, res) => {
- * @access Private
- */
-
-
-//restrict the route with token verify
-router.post("/register", checkAuth, async (req, res) => {
+//Add User
+router.post("/registration", checkAuth, async (req, res) => {
 
 
   // validate the data before creating an user
@@ -100,7 +91,31 @@ router.get('/', (req, res) => {
       })
     }
   })
-})
+});
+
+//Update User
+
+//TODO - CHECK params given in fromt +  CHECK LOGIC
+router.patch('/:username', /*checkAuth,*/ (req, res) => {
+  let query = {
+    username: req.params.username,
+  }
+  User.findOneAndUpdate(query, {username: req.body.username}, (err, docs) => {
+    if(err || !docs) {
+      return res.status(400).json({
+        msg: "User not Found"
+      })
+    } else {
+      return res.status(200).json({
+        msg: "User Updated Successfully!"
+      })
+    }
+  })
+
+  // {firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, username : req.body.username, role: req.body.role}
+});
+
+
 
 
 module.exports = router;

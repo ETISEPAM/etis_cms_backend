@@ -75,5 +75,24 @@ router.post("/registration", async (req, res) => {
   });
 });
 
+//List Users
+router.get('/', (req, res) => {
+  User.find((err, docs) => {
+    if(!err) {
+      let userList = [];
+      docs.forEach((user) => {
+        userList.push(user.username)
+      })
+      return res.status(200).json({
+        userList
+      })
+    } else {
+      return res.status(404).json({
+        msg: "Failed to Retrieve User List"
+      })
+    }
+  })
+})
+
 
 module.exports = router;

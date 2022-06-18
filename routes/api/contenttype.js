@@ -3,7 +3,6 @@ const router = express.Router();
 const ContentType= require('../../model/ContentType');
 const checkAuth = require("../api/middleware/check-auth");
 
-
 router.post('/', checkAuth, (req, res) => {
     let { name, description } = req.body
     ContentType.findOne({name: name})
@@ -23,33 +22,29 @@ router.post('/', checkAuth, (req, res) => {
             })
         }
     })
-
 });
-//Get the Content Types
-    router.get('/', checkAuth,function(req, res, next) {
-      
-        ContentType.find((err, docs) => {
-            if (!err) {
-                // console.log(docs)
-                let contentTypeNameList = [];
-                docs.forEach((item) => {
-                    contentTypeNameList.push(item.name);
-                })
-                return res.status(201).json({
-                    contentTypeNameList
-                })
-            }
-             else {
-                return res.status(404).json({
-                    msg: "Failed to retrieve content type list"
-                })
-                // console.log('Failed to retrieve the Content Type List: ' + err);
-            }
-        });
+//Get Content Types
+router.get('/', checkAuth, function(req, res, next) {
+    ContentType.find((err, docs) => {
+        if (!err) {
+            // console.log(docs)
+            let contentTypeNameList = [];
+            docs.forEach((item) => {
+                contentTypeNameList.push(item.name);
+            })
+            return res.status(200).json({
+                contentTypeNameList
+            })
+        } else {
+            return res.status(404).json({
+                msg: "Failed to retrieve content type list"
+            })
+            // console.log('Failed to retrieve the Content Type List: ' + err);
+        }
     });
-     
-
-
-// router.post('/fields', )
+});
+//Add Field to Content Type
+router.post('/field', (req, res) => {
+})
 
 module.exports = router;

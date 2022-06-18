@@ -26,5 +26,5 @@ module.exports=(req,res,next)=>{
 
         //  Return response with decode data
 
-}
+        }
 } 

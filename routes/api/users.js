@@ -75,8 +75,8 @@ router.post("/registration", checkAuth, async (req, res) => {
 });
 
 //List Users
-router.get('/', (req, res) => {
-  User.find((err, docs) => {
+router.get('/', async (req, res) => {
+  await User.find((err, docs) => {
     if(!err) {
       let userList = [];
       docs.forEach((user) => {
@@ -95,11 +95,12 @@ router.get('/', (req, res) => {
 
 //UPDATE User
 //TODO - CHECK params given in fromt +  CHECK LOGIC
-router.patch('/:username', /*checkAuth,*/ (req, res) => {
+router.patch('/:username', /*checkAuth,*/ async (req, res) => {
   let query = {
     username: req.params.username,
+    email: req.params.email,
   }
-  User.findOneAndUpdate(query, {username: req.body.username}, (err, docs) => {
+  await User.findOneAndUpdate(query, {username: req.body.username}, (err, docs) => {
     if(err || !docs) {
       return res.status(400).json({
         msg: "User not Found"
@@ -117,11 +118,11 @@ router.patch('/:username', /*checkAuth,*/ (req, res) => {
   });
 
 //DELETE User
-router.delete('/:username', /*checkAuth,*/ (req, res) => {
+router.delete('/:username', /*checkAuth,*/ async (req, res) => {
   let query = {
     username: req.params.username
   }
-  User.findOneAndDelete(query, (err, docs) => {
+  await User.findOneAndDelete(query, (err, docs) => {
     if(err || !docs) {
       return res.status(400).json({
         msg: "User not Found"
@@ -133,7 +134,5 @@ router.delete('/:username', /*checkAuth,*/ (req, res) => {
     }
   })
 })
-
-
 
 module.exports = router;

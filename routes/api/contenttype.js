@@ -3,9 +3,11 @@ const router = express.Router();
 const ContentType= require('../../model/ContentType');
 const checkAuth = require("../api/middleware/check-auth");
 
-router.post('/', checkAuth, (req, res) => {
+
+//Create New Content Type
+router.post('/', checkAuth, async (req, res) => {
     let { name, description } = req.body
-    ContentType.findOne({name: name})
+    await ContentType.findOne({name: name})
     .then(contentType => {
         if(contentType) {
             return res.status(409).json({
@@ -23,9 +25,9 @@ router.post('/', checkAuth, (req, res) => {
         }
     })
 });
-//Get Content Types
-router.get('/', checkAuth, function(req, res, next) {
-    ContentType.find((err, docs) => {
+//Get All Content Types
+router.get('/', checkAuth, async (req, res, next) => {
+    await ContentType.find((err, docs) => {
         if (!err) {
             // console.log(docs)
             let contentTypeNameList = [];
@@ -46,6 +48,7 @@ router.get('/', checkAuth, function(req, res, next) {
 
 //Add Field to Content Type
 router.post('/field', (req, res) => {
-})
+
+});
 
 module.exports = router;

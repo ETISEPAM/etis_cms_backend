@@ -52,6 +52,31 @@ router.post('/field', (req, res) => {
 });
 
 
+//Delete content type according to id
+router.delete('/:id', async (req,res,next)=>{
+    const id = req.params.id;
+    ContentType.findByIdAndRemove(id)
+    .then(data =>{
+        if(!data){
+            res.status(404).send({
+                message: `Cannot delete content type with id =${id}`
+            })
+            
+        }else{
+            res.send({
+                message: "Delete is succeed"
+            })
+        }
+    })
+    .catch(err=>{
+        res.status(500).send({
+            message: "could not delete content type with id"+id 
+        })
+    })
+})
+
+
+
 //Update content type according to id
 
 router.put('/:id', async (req,res,next)=>{

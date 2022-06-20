@@ -26,13 +26,13 @@ router.post('/', checkAuth, async (req, res) => {
     })
 });
 //Get All Content Types
-router.get('/', checkAuth, async (req, res, next) => {
-    await ContentType.find((err, docs) => {
+router.get('/', /*checkAuth*/  (req, res, next) => {
+     ContentType.find((err, docs) => {
         if (!err) {
             // console.log(docs)
             let contentTypeNameList = [];
             docs.forEach((item) => {
-                contentTypeNameList.push(item.name);
+                contentTypeNameList.push({"name": item.name, "id": item._id});
             })
             return res.status(200).json({
                 contentTypeNameList

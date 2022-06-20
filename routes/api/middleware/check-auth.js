@@ -5,9 +5,6 @@ module.exports=(req,res,next)=>{
 
         const token = req.headers.token;
         console.log(token)
-
-
-
         //  Return response with decode data
         if(token){
              // Verify the token using jwt.verify method
@@ -16,25 +13,13 @@ module.exports=(req,res,next)=>{
                 msg: "This route is available ",
                 data: decode
             });
-        }
-
+        }      
         else{
-
-
-      
-        else{
- 
             // Return response with error
             return res.status(401).json({
                 message:"Restricted"
             })
-
         //  Return response with decode data
 
-}
-} 
- 
-        //  Return response with decode data
-      
-}
+        }
 }

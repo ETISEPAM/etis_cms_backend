@@ -14,6 +14,10 @@ const checkAuth = require("../api/middleware/check-auth");
 router.post("/", async (req, res) => {
   //Checking if the user exists
   const user = await User.findOne({ username: req.body.username });
+  
+  // Return User's ID on login
+  const userID = user._id.toString();
+
   if (!user)
     return res.status(404).json({
       msg: "User Not Found",
@@ -33,17 +37,8 @@ router.post("/", async (req, res) => {
   });
 });
 
-/**
- * @route POST api/users/register
- * @des Signing up the admin
-
+//Add User
 router.post("/registration", async (req, res) => {
- * @access Private
- */
-
-
-//restrict the route with token verify
-router.post("/register", checkAuth, async (req, res) => {
 
 
   // validate the data before creating an user
@@ -83,5 +78,65 @@ router.post("/register", checkAuth, async (req, res) => {
   });
 });
 
+//List Users
+router.get('/', async (req, res) => {
+  await User.find((err, docs) => {
+    if(!err) {
+      let userList = [];
+      docs.forEach((user) => {
+        userList.push(user.username)
+      })
+      return res.status(200).json({
+        userList
+      })
+    } else {
+      return res.status(404).json({
+        msg: "Failed to Retrieve User List"
+      })
+    }
+  })
+});
+
+//UPDATE User
+//TODO - CHECK params given in fromt +  CHECK LOGIC
+router.patch('/:username', /*checkAuth,*/ async (req, res) => {
+  let query = {
+    username: req.params.username,
+    email: req.params.email,
+  }
+  await User.findOneAndUpdate(query, {username: req.body.username}, (err, docs) => {
+    if(err || !docs) {
+      return res.status(400).json({
+        msg: "User not Found"
+      })
+    } else {
+      return res.status(200).json({
+        msg: "User Updated Successfully!"
+      })
+    }
+  })
+  /*
+   Will be added to the query depending on the front form params (What can be updated on front?)
+        |___{firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, username : req.body.username, role: req.body.role}
+  */
+  });
+
+//DELETE User
+router.delete('/:username', /*checkAuth,*/ async (req, res) => {
+  let query = {
+    username: req.params.username
+  }
+  await User.findOneAndDelete(query, (err, docs) => {
+    if(err || !docs) {
+      return res.status(400).json({
+        msg: "User not Found"
+      })
+    } else {
+      return res.status(200).json({
+        msg: "User Deleted Successfully!"
+      })
+    }
+  })
+})
 
 module.exports = router;

@@ -5,7 +5,7 @@ const checkAuth = require("../api/middleware/check-auth");
 
 
 //Create New Content Type
-router.post('/', checkAuth, async (req, res) => {
+router.post('/', /*checkAuth*/ async (req, res) => {
     let { name, description } = req.body
     await ContentType.findOne({name: name})
     .then(contentType => {
@@ -26,13 +26,13 @@ router.post('/', checkAuth, async (req, res) => {
     })
 });
 //Get All Content Types
-router.get('/', checkAuth, async (req, res, next) => {
-    await ContentType.find((err, docs) => {
+router.get('/', /*checkAuth*/  (req, res, next) => {
+     ContentType.find((err, docs) => {
         if (!err) {
             // console.log(docs)
             let contentTypeNameList = [];
             docs.forEach((item) => {
-                contentTypeNameList.push(item.name);
+                contentTypeNameList.push({"name": item.name, "id": item._id});
             })
             return res.status(200).json({
                 contentTypeNameList
@@ -50,5 +50,31 @@ router.get('/', checkAuth, async (req, res, next) => {
 router.post('/field', (req, res) => {
 
 });
+
+
+//Update content type according to id
+
+router.put('/:id', async (req,res,next)=>{
+    if(!req.body){
+        return res.status(400).send({
+            message:"Data to update can not be empty"
+        });
+    }
+    const id = req.params.id;
+    ContentType.findByIdAndUpdate(id, req.body, {useFindAndModify:false})
+    .then(data=>{
+        if(!data){
+            res.status(404).send({
+                message:`Can not update the content type with id=${id}`
+            })
+        }else{
+            res.send({message:"Updated succesfully"});
+        }
+    }).catch(err=>{
+        res.status(500).send({
+            message: `Error updating content type with id= ${id}`
+        })
+    })
+})
 
 module.exports = router;

@@ -26,7 +26,7 @@ mongoose.connect(process.env.DB_URI, {useNewUrlParser:true} ).then(() =>{
 });
 
 const users= require('./routes/api/users');
-const contentType= require('./routes/api/contenttype');
+const contentType= require('./routes/api/contentType');
 
 
 app.use('/api/users', users);

@@ -4,6 +4,7 @@
   "description": "Backend",
   "main": "index.js",
   "scripts": {
+
     "start": "nodemon app.js"
   },
   "author": "Irmak Tekin, Emre Cetin, Tarik Ceylan",

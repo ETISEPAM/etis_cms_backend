@@ -5,6 +5,7 @@ const checkAuth = require("../api/middleware/check-auth");
 
 
 
+
 //create content type
 
 router.post('/', checkAuth, (req, res) => {
@@ -12,7 +13,7 @@ router.post('/', checkAuth, (req, res) => {
     ContentType.findOne({name: name})
     .then(contentType => {
         if(contentType) {
-            return res.status(400).json({
+            return res.status(409).json({
                 msg: "Content Type Already Exists!"
             })
         } else {
@@ -27,13 +28,16 @@ router.post('/', checkAuth, (req, res) => {
         }
     })
 
-    
 });
+//Get the Content Types
+    router.get('/', checkAuth,function(req, res, next) {
+
 
 
 
 //get the content types
     router.get('/', checkAuth, function(req, res, next) {
+
       
         ContentType.find((err, docs) => {
             if (!err) {
@@ -47,7 +51,10 @@ router.post('/', checkAuth, (req, res) => {
                 })
             }
              else {
-                console.log('Failed to retrieve the Content Type List: ' + err);
+                return res.status(404).json({
+                    msg: "Failed to retrieve content type list"
+                })
+                // console.log('Failed to retrieve the Content Type List: ' + err);
             }
         });
     });

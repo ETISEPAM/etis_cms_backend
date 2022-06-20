@@ -1,12 +1,14 @@
 const jwt = require('jsonwebtoken')
 module.exports=(req,res,next)=>{
- 
+
     // If the token is present
     
-        const token = (req.headers.token);
+
+        const token = req.headers.token;
         console.log(token)
-    
-       
+
+
+
         //  Return response with decode data
         if(token){
              // Verify the token using jwt.verify method
@@ -16,6 +18,10 @@ module.exports=(req,res,next)=>{
                 
             });
         }
+
+        
+
+
       
         else{
  
@@ -23,8 +29,13 @@ module.exports=(req,res,next)=>{
             return res.status(401).json({
                 message:"Restricted"
             })
+
+        //  Return response with decode data
+
+}
+} 
  
         //  Return response with decode data
       
-}
-}
+
+

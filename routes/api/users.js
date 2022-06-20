@@ -14,6 +14,10 @@ const checkAuth = require("../api/middleware/check-auth");
 router.post("/", async (req, res) => {
   //Checking if the user exists
   const user = await User.findOne({ username: req.body.username });
+  
+  // Return User's ID on login
+  const userID = user._id.toString();
+
   if (!user)
     return res.status(404).json({
       msg: "User Not Found",
@@ -34,7 +38,7 @@ router.post("/", async (req, res) => {
 });
 
 //Add User
-router.post("/registration", checkAuth, async (req, res) => {
+router.post("/registration", async (req, res) => {
 
 
   // validate the data before creating an user

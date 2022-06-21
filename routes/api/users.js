@@ -111,14 +111,16 @@ router.patch(
         };
         await User.findOneAndUpdate(
             query,
+            { new: true },
             { username: req.body.username },
-            (err, docs) => {
-                if (err || !docs) {
+            (err, user) => {
+                if (err || !user) {
                     return res.status(400).json({
                         msg: "User not Found",
                     });
                 } else {
                     return res.status(200).json({
+                        user,
                         msg: "User Updated Successfully!",
                     });
                 }

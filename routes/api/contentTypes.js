@@ -82,7 +82,12 @@ router.patch("/:id", async (req, res, next) => {
         });
     }
     const id = req.params.id;
-    ContentType.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+    ContentType.findByIdAndUpdate(
+        id,
+        req.body,
+        { useFindAndModify: false },
+        { new: true }
+    )
         .then((data) => {
             if (!data) {
                 res.status(404).send({

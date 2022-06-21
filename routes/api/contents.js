@@ -63,4 +63,26 @@ router.post(
     }
 );
 
+//UPDATE Content
+router.patch("/:id", (req, res) => {
+    const id = req.params.id;
+    Content.findByIdAndUpdate(
+        id,
+        { "contentBody.title": req.body.title },
+        { new: true },
+        (err, content) => {
+            if (err || !content) {
+                return res.status(400).json({
+                    msg: "No Content Found",
+                });
+            } else {
+                return res.status(200).json({
+                    msg: "User Updated Successfully!",
+                    content,
+                });
+            }
+        }
+    );
+});
+
 module.exports = router;

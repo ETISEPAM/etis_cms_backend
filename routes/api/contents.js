@@ -63,7 +63,7 @@ router.post(
     }
 );
 
-//UPDATE Content
+//UPDATE Specific Content
 router.patch("/:id", (req, res) => {
     const id = req.params.id;
     Content.findByIdAndUpdate(
@@ -83,6 +83,22 @@ router.patch("/:id", (req, res) => {
             }
         }
     );
+});
+
+//DELETE Specific Content
+router.delete("/:id", (req, res) => {
+    const id = req.params.id;
+    Content.findByIdAndDelete(id, (err, content) => {
+        if (err || !content) {
+            return res.status(404).json({
+                msg: "Content Not Found",
+            });
+        } else {
+            return res.status(200).json({
+                msg: "Content Deleted Successfully",
+            });
+        }
+    });
 });
 
 module.exports = router;

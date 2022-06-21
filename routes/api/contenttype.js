@@ -64,7 +64,8 @@ router.delete('/:id', async (req,res,next)=>{
             
         }else{
             res.send({
-                message: "Delete is succeed"
+                message: "Delete is succeed",
+                deletedData: data
             })
         }
     })

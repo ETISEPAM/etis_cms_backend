@@ -40,7 +40,7 @@ router.post(
         let { title, body } = req.body;
         Content.findOne({
             "contentBody.title": title,
-            "contentBody.body": body,
+            "contentBody.body": body, new:true
         }).then((content) => {
             if (content) {
                 return res.status(409).json({

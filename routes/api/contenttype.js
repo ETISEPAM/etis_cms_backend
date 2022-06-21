@@ -93,7 +93,9 @@ router.patch('/:id', async (req,res,next)=>{
                 message:`Can not update the content type with id=${id}`
             })
         }else{
-            res.send({message:"Updated succesfully"});
+            res.send({message:"Updated succesfully",
+        updatedData: data});
+            
         }
     }).catch(err=>{
         res.status(500).send({

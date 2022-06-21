@@ -59,11 +59,12 @@ router.delete("/:id", async (req, res, next) => {
         .then((data) => {
             if (!data) {
                 res.status(404).send({
-                    message: `Cannot delete content type with id =${id}`,
+                    message: `Cannot delete content type with id =${id}`
                 });
             } else {
                 res.send({
                     message: "Delete is succeed",
+                    deletedData:data
                 });
             }
         })

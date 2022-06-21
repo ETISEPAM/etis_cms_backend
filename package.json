@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
 
-    "serve": "nodemon app.js"
+    "start": "nodemon app.js"
   },
   "author": "Irmak Tekin, Emre Cetin, Tarik Ceylan",
   "license": "ISC",

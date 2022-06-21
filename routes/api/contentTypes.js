@@ -19,6 +19,7 @@ router.post(
                     return res.status(201).json({
                         success: true,
                         msg: "Content Type Created Successfully",
+                        newContent: newContentType
                     });
                 });
             }
@@ -82,14 +83,15 @@ router.patch("/:id", async (req, res, next) => {
         });
     }
     const id = req.params.id;
-    ContentType.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+    ContentType.findByIdAndUpdate(id, req.body,  { useFindAndModify: false ,new:true})
         .then((data) => {
             if (!data) {
                 res.status(404).send({
                     message: `Can not update the content type with id=${id}`,
                 });
             } else {
-                res.send({ message: "Updated succesfully" });
+                res.send({ message: "Updated succesfully" ,data});
+                
             }
         })
         .catch((err) => {

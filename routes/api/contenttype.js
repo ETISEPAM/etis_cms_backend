@@ -79,7 +79,7 @@ router.delete('/:id', async (req,res,next)=>{
 
 //Update content type according to id
 
-router.put('/:id', async (req,res,next)=>{
+router.patch('/:id', async (req,res,next)=>{
     if(!req.body){
         return res.status(400).send({
             message:"Data to update can not be empty"
@@ -119,4 +119,6 @@ router.get("/:id", async(req,res,next)=>{
             .send({message:"Error while retrieving the content type with id"}+id)
     })
 })
+
+
 module.exports = router;

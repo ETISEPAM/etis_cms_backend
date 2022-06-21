@@ -102,7 +102,6 @@ router.patch('/:id', async (req,res,next)=>{
     })
 })
 
-
 //Get the content type with specific id
 router.get("/:id", async(req,res,next)=>{
     const id = req.params.id;

@@ -102,4 +102,21 @@ router.put('/:id', async (req,res,next)=>{
     })
 })
 
+
+//Get the content type with specific id
+router.get("/:id", async(req,res,next)=>{
+    const id = req.params.id;
+    ContentType.findById(id)
+    .then(data=>{
+        if(!data){
+            res.status(404).send({message:"Not found content type with id"+id})
+        }
+        else res.send(data);
+    })
+    .catch(err=>{
+        res
+            .status(500)
+            .send({message:"Error while retrieving the content type with id"}+id)
+    })
+})
 module.exports = router;

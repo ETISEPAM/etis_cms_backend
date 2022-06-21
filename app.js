@@ -8,6 +8,7 @@ const cors = require("cors");
 const users = require("./routes/api/users");
 const contentType = require("./routes/api/contentTypes");
 const contents = require("./routes/api/contents");
+const fields = require("./routes/api/fields");
 
 // initialize the app
 const app = express();
@@ -23,6 +24,7 @@ app.use(cors());
 app.use("/api/users", users);
 app.use("/api/contentTypes", contentType);
 app.use("/api/contents", contents);
+app.use("/api/fields", fields);
 
 //Database Configuration
 const db = mongoose.connection;

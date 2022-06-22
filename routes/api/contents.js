@@ -4,7 +4,7 @@ const Content = require("../../model/Content");
 const checkAuth = require("./middleware/checkAuth");
 
 // List All Contents
-router.get("/", (req, res) => {
+router.get("/",  (req, res) => {
     Content.find((err, contents) => {
         if (!err) {
             res.status(200).json({

@@ -83,21 +83,28 @@ router.post("/registration", async (req, res) => {
 
 //List Users
 router.get("/", async (req, res) => {
-    await User.find((err, docs) => {
-        if (!err) {
-            let userList = [];
-            docs.forEach((user) => {
-                userList.push(user.username);
-            });
-            return res.status(200).json({
-                userList,
-            });
-        } else {
-            return res.status(404).json({
-                msg: "Failed to Retrieve User List",
-            });
-        }
-    });
+ 
+    const { page = 1, limit = 10 } = req.query;
+
+    try {
+      // execute query with page and limit values
+      const users = await User.find()
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .exec();
+  
+      // get total documents in the Posts collection 
+      const count = await User.countDocuments();
+  
+      // return response with posts, total pages, and current page
+      res.json({
+        users,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page
+      });
+    } catch (err) {
+      console.error(err.message);
+    }
 });
 
 //UPDATE User

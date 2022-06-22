@@ -3,6 +3,9 @@ const router = express.Router();
 const Content = require("../../model/Content");
 const checkAuth = require("./middleware/checkAuth");
 
+const cookieParser = require("cookie-parser");
+router.use(cookieParser());
+
 // List All Contents
 router.get("/", (req, res) => {
     Content.find((err, contents) => {
@@ -33,10 +36,10 @@ router.get("/:id", (req, res) => {
     });
 });
 
-//CREATE Content
+//CREATE New Content
 router.post(
     "/",
-    /*checkAuth,*/ (req, res) => {
+    /*checkAuth,*/ async (req, res) => {
         let { title, body } = req.body;
         Content.findOne({
             "contentBody.title": title,
@@ -48,9 +51,9 @@ router.post(
                 });
             } else {
                 const newContent = new Content({
+                    ownerId: req.cookies.userID,
                     contentBody: { title, body },
                 });
-                console.log(newContent);
                 newContent.save().then(() => {
                     return res.status(201).json({
                         success: true,
@@ -64,7 +67,7 @@ router.post(
 );
 
 //UPDATE Specific Content
-router.patch("/:id", (req, res) => {
+router.patch("/:id", async (req, res) => {
     const id = req.params.id;
     Content.findByIdAndUpdate(
         id,
@@ -86,7 +89,7 @@ router.patch("/:id", (req, res) => {
 });
 
 //DELETE Specific Content
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
     const id = req.params.id;
     Content.findByIdAndDelete(id, (err, content) => {
         if (err || !content) {

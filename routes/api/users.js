@@ -15,9 +15,6 @@ router.post("/", async (req, res) => {
     //Checking if the user exists
     const user = await User.findOne({ username: req.body.username });
 
-    // Return User's ID on login
-    const userID = user._id.toString();
-
     if (!user)
         return res.status(404).json({
             msg: "User Not Found",
@@ -111,14 +108,16 @@ router.patch(
         };
         await User.findOneAndUpdate(
             query,
+            { new: true },
             { username: req.body.username },
-            (err, docs) => {
-                if (err || !docs) {
+            (err, user) => {
+                if (err || !user) {
                     return res.status(400).json({
                         msg: "User not Found",
                     });
                 } else {
                     return res.status(200).json({
+                        user,
                         msg: "User Updated Successfully!",
                     });
                 }
@@ -138,8 +137,8 @@ router.delete(
         let query = {
             username: req.params.username,
         };
-        await User.findOneAndDelete(query, (err, docs) => {
-            if (err || !docs) {
+        await User.findOneAndDelete(query, (err, users) => {
+            if (err || !users) {
                 return res.status(400).json({
                     msg: "User not Found",
                 });

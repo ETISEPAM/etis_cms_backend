@@ -6,9 +6,11 @@ const cors = require('cors');
 
 
 // Require Routes
-const users= require('./routes/api/users');
-const contentType= require('./routes/api/contentTypes');
-const contents = require('./routes/api/contents');
+const users = require("./routes/api/users");
+const contentType = require("./routes/api/contentTypes");
+const contents = require("./routes/api/contents");
+const fields = require("./routes/api/fields");
+
 
 // initialize the app
 const app = express();
@@ -21,9 +23,10 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cors());
 
-app.use('/api/users', users);
-app.use('/api/contenttype', contentType);
-app.use('/api/contents', contents);
+app.use("/api/users", users);
+app.use("/api/contentTypes", contentType);
+app.use("/api/contents", contents);
+app.use("/api/fields", fields);
 
 
 //Database Configuration

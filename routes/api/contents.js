@@ -7,18 +7,29 @@ const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
 // List All Contents
-router.get("/",  (req, res) => {
-    Content.find((err, contents) => {
-        if (!err) {
-            res.status(200).json({
-                contents,
-            });
-        } else {
-            res.status(404).json({
-                msg: `Content List Not Found!`,
-            });
-        }
-    });
+router.get("/",  async(req, res) => {
+    
+    const { page = 1, limit = 10 } = req.query;
+
+    try {
+      // execute query with page and limit values
+      const contents =  await Content.find()
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .exec();
+  
+      // get total documents in the Posts collection 
+      const count =   Content.countDocuments();
+  
+      // return response with posts, total pages, and current page
+      res.json({
+        contents,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page
+      });
+    } catch (err) {
+      console.error(err.message);
+    }
 });
 
 //Show One Content

@@ -26,31 +26,11 @@ router.post(
         });
     }
 );
+
 //Get All Content Types
 router.get(
     "/",
     /*checkAuth*/ (req, res, next) => {
-        const { page = 1, limit = 10 } = req.query;
-
-        try {
-          // execute query with page and limit values
-          const result =  ContentType.find()
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .exec();
-      
-          // get total documents in the Posts collection 
-          const count =  ContentType.countDocuments();
-      
-          // return response with posts, total pages, and current page
-          res.json({
-            result,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page
-          });
-        } catch (err) {
-          console.error(err.message);
-        }
         
 
 
@@ -76,6 +56,9 @@ router.get(
                 });
             }
         });
+
+
+        
     }
 );
 
@@ -107,7 +90,7 @@ router.delete("/:id", async (req, res, next) => {
 
 //Update content type according to id
 
-router.patch("/:id", async (req, res, next) => {
+router.patch("/:id", async (req, res) => {
     if (!req.body) {
         return res.status(400).send({
             message: "Data to update can not be empty",
@@ -117,7 +100,7 @@ router.patch("/:id", async (req, res, next) => {
     ContentType.findByIdAndUpdate(
         id,
         req.body,
-        { useFindAndModify: false },
+        
         { new: true }
     )
 

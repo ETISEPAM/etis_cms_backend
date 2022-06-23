@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
 // List All Contents
-router.get("/", (req, res) => {
+router.get("/",  (req, res) => {
     Content.find((err, contents) => {
         if (!err) {
             res.status(200).json({

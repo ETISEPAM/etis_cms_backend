@@ -30,15 +30,25 @@ router.post(
 router.get(
     "/",
     /*checkAuth*/ (req, res, next) => {
+       
+        
+
+
         ContentType.find((err, docs) => {
             if (!err) {
-                // console.log(docs)
+                //pagination
+      
                 let contentTypeNameList = [];
+
+                // console.log(docs)
+             
                 docs.forEach((item) => {
+
                     contentTypeNameList.push({ name: item.name, id: item._id });
-                });
+                 });
                 return res.status(200).json({
-                    contentTypeNameList,
+                    contentTypeNameList
+                    
                 });
             } else {
                 return res.status(404).json({
@@ -126,6 +136,55 @@ router.get("/:id", async (req, res, next) => {
             );
         });
 });
+/*function paginate(model){
+    return(req,res,next)=>{
+        const page = req.query.page;
+        const limit = req.query.limit;
+        const startIndex = (page-1) * limit;
+        const endIndex = page*limit;
+        const result = {}
 
+        if(endIndex<model.countDocuments().exec()){
+            result.next = {
+                page: page+1,
+                limit:limit
+            };
+        }
+        if(startIndex>0){
+            result.previous = {
+                page: page - 1,
+                limit:limit
+            }
+        }
+
+        try{
+ //get paginated documents
+ this.find().skip(skip).limit(limit).exec(function(err, docs){
+
+    if(err){
+        return callback('Error Occured', null);
+    }
+    else if(!docs){
+        return callback('Docs Not Found', null);
+    }
+    else{
+        var result = {
+            "totalRecords" : totalCount,
+            "page": pageNo,
+            "nextPage": pageNo + 1,
+            "result": docs
+        };
+        return callback(null, result);
+    }
+
+});
+        
+        
+      } catch(e){
+        res.status(500).json({message:e.message})
+
+    }
+}
+}*/
 module.exports = router;
 

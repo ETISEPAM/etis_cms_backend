@@ -19,6 +19,7 @@ router.post(
                     return res.status(201).json({
                         success: true,
                         msg: "Content Type Created Successfully",
+                        newContent: newContentType
                     });
                 });
             }
@@ -58,11 +59,12 @@ router.delete("/:id", async (req, res, next) => {
         .then((data) => {
             if (!data) {
                 res.status(404).send({
-                    message: `Cannot delete content type with id =${id}`,
+                    message: `Cannot delete content type with id =${id}`
                 });
             } else {
                 res.send({
                     message: "Delete is succeed",
+                    deletedData:data
                 });
             }
         })
@@ -88,13 +90,15 @@ router.patch("/:id", async (req, res, next) => {
         { useFindAndModify: false },
         { new: true }
     )
+
         .then((data) => {
             if (!data) {
                 res.status(404).send({
                     message: `Can not update the content type with id=${id}`,
                 });
             } else {
-                res.send({ message: "Updated succesfully" });
+                res.send({ message: "Updated succesfully" ,data});
+                
             }
         })
         .catch((err) => {

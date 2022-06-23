@@ -5,6 +5,9 @@ const bcrypt = require("bcrypt");
 const { registerValidation } = require("../../utils/validation");
 const { generateToken } = require("../../utils/tokenGen");
 const checkAuth = require("./middleware/checkAuth");
+const cookieParser = require("cookie-parser");
+
+router.use(cookieParser());
 
 /**
  * @route POST api/users/login
@@ -23,7 +26,7 @@ router.post("/", async (req, res) => {
     //checks pw
     bcrypt.compare(req.body.password, user.password).then((isMatch) => {
         if (isMatch) {
-            generateToken(user, 201, res);
+            generateToken(user, 200, res);
         } else {
             return res.status(403).json({
                 msg: "Incorrect Password",
@@ -80,43 +83,43 @@ router.post("/registration", async (req, res) => {
 
 //List Users
 router.get("/", async (req, res) => {
- 
     const { page = 1, limit = 10 } = req.query;
 
     try {
-      // execute query with page and limit values
-      const users = await User.find()
-        .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .exec();
-  
-      // get total documents in the Posts collection 
-      const count = await User.countDocuments();
-  
-      // return response with posts, total pages, and current page
-      res.json({
-        users,
-        totalPages: Math.ceil(count / limit),
-        currentPage: page
-      });
+        // execute query with page and limit values
+        const users = await User.find()
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec();
+
+        // get total documents in the Posts collection
+        const count = await User.countDocuments();
+
+        // return response with posts, total pages, and current page
+        res.json({
+            users,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+        });
     } catch (err) {
-      console.error(err.message);
+        console.error(err.message);
     }
 });
 
 //UPDATE User
 //TODO - CHECK params given in fromt +  CHECK LOGIC
 router.patch(
-    "/:username",
-    /*checkAuth,*/ async (req, res) => {
-        let query = {
-            username: req.params.username,
-            email: req.params.email,
-        };
-        await User.findOneAndUpdate(
-            query,
+    "/:id",
+    /*checkAuth,*/ (req, res) => {
+        const id = req.cookies.userID;
+        User.findOneAndUpdate(
+            id,
+            {
+                username: req.body.username,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+            },
             { new: true },
-            { username: req.body.username },
             (err, user) => {
                 if (err || !user) {
                     return res.status(400).json({
@@ -139,18 +142,15 @@ router.patch(
 
 //DELETE User
 router.delete(
-    "/:username",
-    /*checkAuth,*/ async (req, res) => {
-        let query = {
-            username: req.params.username,
-        };
-        await User.findOneAndDelete(query, (err, users) => {
+    "/:id",
+    /*checkAuth,*/ (req, res) => {
+        User.findOneAndDelete(req.params.id, (err, users) => {
             if (err || !users) {
                 return res.status(400).json({
                     msg: "User not Found",
                 });
             } else {
-                return res.status(200).json({
+                return res.status(204).json({
                     msg: "User Deleted Successfully!",
                 });
             }

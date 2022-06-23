@@ -85,7 +85,7 @@ router.delete(
                     msg: "The Field Not Found!",
                 });
             } else {
-                return res.status(200).json({
+                return res.status(204).json({
                     success: true,
                     msg: "Field Deleted!",
                 });
@@ -99,7 +99,7 @@ router.patch(
     "/:id",
     /*checkAuth*/ (req, res) => {
         const id = req.params.id;
-        Field.findOneAndUpdate(
+        Field.findByIdAndUpdate(
             id,
             {
                 label: req.body.label,

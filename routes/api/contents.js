@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
 // List All Contents
-router.get("/",  (req, res) => {
+router.get("/", (req, res) => {
     Content.find((err, contents) => {
         if (!err) {
             res.status(200).json({
@@ -39,11 +39,12 @@ router.get("/:id", (req, res) => {
 //CREATE New Content
 router.post(
     "/",
-    /*checkAuth,*/ async (req, res) => {
+    /*checkAuth,*/ (req, res) => {
         let { title, body } = req.body;
         Content.findOne({
             "contentBody.title": title,
-            "contentBody.body": body, new:true
+            "contentBody.body": body,
+            new: true,
         }).then((content) => {
             if (content) {
                 return res.status(409).json({
@@ -67,11 +68,14 @@ router.post(
 );
 
 //UPDATE Specific Content
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", (req, res) => {
     const id = req.params.id;
     Content.findByIdAndUpdate(
         id,
-        { "contentBody.title": req.body.title },
+        {
+            "contentBody.title": req.body.title,
+            "contentBody.body": req.body.body,
+        },
         { new: true },
         (err, content) => {
             if (err || !content) {
@@ -80,7 +84,7 @@ router.patch("/:id", async (req, res) => {
                 });
             } else {
                 return res.status(200).json({
-                    msg: "User Updated Successfully!",
+                    msg: "Content Title Updated Successfully!",
                     content,
                 });
             }
@@ -89,7 +93,7 @@ router.patch("/:id", async (req, res) => {
 });
 
 //DELETE Specific Content
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", (req, res) => {
     const id = req.params.id;
     Content.findByIdAndDelete(id, (err, content) => {
         if (err || !content) {
@@ -97,9 +101,9 @@ router.delete("/:id", async (req, res) => {
                 msg: "Content Not Found",
             });
         } else {
-            return res.status(200).json({
+            return res.status(204).json({
                 msg: "Content Deleted Successfully",
-                deletedContent: content
+                deletedContent: content,
             });
         }
     });

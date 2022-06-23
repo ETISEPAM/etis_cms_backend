@@ -12,7 +12,7 @@ const registerValidation = (data) => {
         password: Joi.string()
             .pattern(
                 new RegExp(
-                    /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
+                    /^(?=.*\d)(?=.*[!@#$%^&*+-/])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
                 )
             )
             .required(),

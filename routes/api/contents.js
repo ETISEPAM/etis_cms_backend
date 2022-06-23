@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
 // List All Contents
-router.get("/", (req, res) => {
+router.get("/",  (req, res) => {
     Content.find((err, contents) => {
         if (!err) {
             res.status(200).json({
@@ -99,6 +99,7 @@ router.delete("/:id", async (req, res) => {
         } else {
             return res.status(200).json({
                 msg: "Content Deleted Successfully",
+                deletedContent: content
             });
         }
     });

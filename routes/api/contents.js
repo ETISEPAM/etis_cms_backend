@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Content = require("../../model/Content");
 const checkAuth = require("./middleware/checkAuth");
-
 const cookieParser = require("cookie-parser");
+
 router.use(cookieParser());
 
 // List All Contents

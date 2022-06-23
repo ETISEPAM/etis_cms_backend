@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const ContentType = require("../../model/ContentType");
 const checkAuth = require("./middleware/checkAuth");
+const cookieParser = require("cookie-parser");
+
+router.use(cookieParser());
 
 //Create New Content Type
 router.post(
@@ -14,7 +17,11 @@ router.post(
                     msg: "Content Type Already Exists!",
                 });
             } else {
-                const newContentType = new ContentType({ name, description });
+                const newContentType = new ContentType({
+                    name,
+                    description,
+                    ownerId: req.cookies.userID,
+                });
                 newContentType.save().then(() => {
                     return res.status(201).json({
                         success: true,
@@ -124,4 +131,3 @@ router.get("/:id", async (req, res, next) => {
 });
 
 module.exports = router;
-

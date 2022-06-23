@@ -26,6 +26,7 @@ router.post(
                     return res.status(201).json({
                         success: true,
                         msg: "Content Type Created Successfully",
+                        newContent: newContentType
                     });
                 });
             }
@@ -36,15 +37,45 @@ router.post(
 router.get(
     "/",
     /*checkAuth*/ (req, res, next) => {
+        const { page = 1, limit = 10 } = req.query;
+
+        try {
+          // execute query with page and limit values
+          const result =  ContentType.find()
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec();
+      
+          // get total documents in the Posts collection 
+          const count =  ContentType.countDocuments();
+      
+          // return response with posts, total pages, and current page
+          res.json({
+            result,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
+          });
+        } catch (err) {
+          console.error(err.message);
+        }
+        
+
+
         ContentType.find((err, docs) => {
             if (!err) {
-                // console.log(docs)
+                //pagination
+      
                 let contentTypeNameList = [];
+
+                // console.log(docs)
+             
                 docs.forEach((item) => {
+
                     contentTypeNameList.push({ name: item.name, id: item._id });
-                });
+                 });
                 return res.status(200).json({
-                    contentTypeNameList,
+                    contentTypeNameList
+                    
                 });
             } else {
                 return res.status(404).json({
@@ -65,11 +96,12 @@ router.delete("/:id", async (req, res, next) => {
         .then((data) => {
             if (!data) {
                 res.status(404).send({
-                    message: `Cannot delete content type with id =${id}`,
+                    message: `Cannot delete content type with id =${id}`
                 });
             } else {
                 res.send({
                     message: "Delete is succeed",
+                    deletedData:data
                 });
             }
         })
@@ -95,13 +127,15 @@ router.patch("/:id", async (req, res, next) => {
         { useFindAndModify: false },
         { new: true }
     )
+
         .then((data) => {
             if (!data) {
                 res.status(404).send({
                     message: `Can not update the content type with id=${id}`,
                 });
             } else {
-                res.send({ message: "Updated succesfully" });
+                res.send({ message: "Updated succesfully" ,data});
+                
             }
         })
         .catch((err) => {

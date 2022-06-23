@@ -30,7 +30,27 @@ router.post(
 router.get(
     "/",
     /*checkAuth*/ (req, res, next) => {
-       
+        const { page = 1, limit = 10 } = req.query;
+
+        try {
+          // execute query with page and limit values
+          const result =  ContentType.find()
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec();
+      
+          // get total documents in the Posts collection 
+          const count =  ContentType.countDocuments();
+      
+          // return response with posts, total pages, and current page
+          res.json({
+            result,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
+          });
+        } catch (err) {
+          console.error(err.message);
+        }
         
 
 
@@ -136,55 +156,6 @@ router.get("/:id", async (req, res, next) => {
             );
         });
 });
-/*function paginate(model){
-    return(req,res,next)=>{
-        const page = req.query.page;
-        const limit = req.query.limit;
-        const startIndex = (page-1) * limit;
-        const endIndex = page*limit;
-        const result = {}
 
-        if(endIndex<model.countDocuments().exec()){
-            result.next = {
-                page: page+1,
-                limit:limit
-            };
-        }
-        if(startIndex>0){
-            result.previous = {
-                page: page - 1,
-                limit:limit
-            }
-        }
-
-        try{
- //get paginated documents
- this.find().skip(skip).limit(limit).exec(function(err, docs){
-
-    if(err){
-        return callback('Error Occured', null);
-    }
-    else if(!docs){
-        return callback('Docs Not Found', null);
-    }
-    else{
-        var result = {
-            "totalRecords" : totalCount,
-            "page": pageNo,
-            "nextPage": pageNo + 1,
-            "result": docs
-        };
-        return callback(null, result);
-    }
-
-});
-        
-        
-      } catch(e){
-        res.status(500).json({message:e.message})
-
-    }
-}
-}*/
 module.exports = router;
 

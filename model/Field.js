@@ -29,6 +29,7 @@ const fieldSchema = new Schema({
             maVal: Date,
         },
     },
+
 });
 
 module.exports = Field = mongoose.model("fields", fieldSchema);

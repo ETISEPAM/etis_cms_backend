@@ -3,8 +3,11 @@ const router = express.Router();
 const Content = require("../../model/Content");
 const checkAuth = require("./middleware/checkAuth");
 
+const cookieParser = require("cookie-parser");
+router.use(cookieParser());
+
 // List All Contents
-router.get("/", (req, res) => {
+router.get("/",  (req, res) => {
     Content.find((err, contents) => {
         if (!err) {
             res.status(200).json({
@@ -33,14 +36,14 @@ router.get("/:id", (req, res) => {
     });
 });
 
-//CREATE Content
+//CREATE New Content
 router.post(
     "/",
-    /*checkAuth,*/ (req, res) => {
+    /*checkAuth,*/ async (req, res) => {
         let { title, body } = req.body;
         Content.findOne({
             "contentBody.title": title,
-            "contentBody.body": body,
+            "contentBody.body": body, new:true
         }).then((content) => {
             if (content) {
                 return res.status(409).json({
@@ -48,9 +51,9 @@ router.post(
                 });
             } else {
                 const newContent = new Content({
+                    ownerId: req.cookies.userID,
                     contentBody: { title, body },
                 });
-                console.log(newContent);
                 newContent.save().then(() => {
                     return res.status(201).json({
                         success: true,
@@ -62,5 +65,44 @@ router.post(
         });
     }
 );
+
+//UPDATE Specific Content
+router.patch("/:id", async (req, res) => {
+    const id = req.params.id;
+    Content.findByIdAndUpdate(
+        id,
+        { "contentBody.title": req.body.title },
+        { new: true },
+        (err, content) => {
+            if (err || !content) {
+                return res.status(400).json({
+                    msg: "No Content Found",
+                });
+            } else {
+                return res.status(200).json({
+                    msg: "User Updated Successfully!",
+                    content,
+                });
+            }
+        }
+    );
+});
+
+//DELETE Specific Content
+router.delete("/:id", async (req, res) => {
+    const id = req.params.id;
+    Content.findByIdAndDelete(id, (err, content) => {
+        if (err || !content) {
+            return res.status(404).json({
+                msg: "Content Not Found",
+            });
+        } else {
+            return res.status(200).json({
+                msg: "Content Deleted Successfully",
+                deletedContent: content
+            });
+        }
+    });
+});
 
 module.exports = router;

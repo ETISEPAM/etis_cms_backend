@@ -15,9 +15,6 @@ router.post("/", async (req, res) => {
     //Checking if the user exists
     const user = await User.findOne({ username: req.body.username });
 
-    // Return User's ID on login
-    const userID = user._id.toString();
-
     if (!user)
         return res.status(404).json({
             msg: "User Not Found",
@@ -83,21 +80,28 @@ router.post("/registration", async (req, res) => {
 
 //List Users
 router.get("/", async (req, res) => {
-    await User.find((err, docs) => {
-        if (!err) {
-            let userList = [];
-            docs.forEach((user) => {
-                userList.push(user.username);
-            });
-            return res.status(200).json({
-                userList,
-            });
-        } else {
-            return res.status(404).json({
-                msg: "Failed to Retrieve User List",
-            });
-        }
-    });
+ 
+    const { page = 1, limit = 10 } = req.query;
+
+    try {
+      // execute query with page and limit values
+      const users = await User.find()
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .exec();
+  
+      // get total documents in the Posts collection 
+      const count = await User.countDocuments();
+  
+      // return response with posts, total pages, and current page
+      res.json({
+        users,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page
+      });
+    } catch (err) {
+      console.error(err.message);
+    }
 });
 
 //UPDATE User
@@ -111,14 +115,16 @@ router.patch(
         };
         await User.findOneAndUpdate(
             query,
+            { new: true },
             { username: req.body.username },
-            (err, docs) => {
-                if (err || !docs) {
+            (err, user) => {
+                if (err || !user) {
                     return res.status(400).json({
                         msg: "User not Found",
                     });
                 } else {
                     return res.status(200).json({
+                        user,
                         msg: "User Updated Successfully!",
                     });
                 }
@@ -138,8 +144,8 @@ router.delete(
         let query = {
             username: req.params.username,
         };
-        await User.findOneAndDelete(query, (err, docs) => {
-            if (err || !docs) {
+        await User.findOneAndDelete(query, (err, users) => {
+            if (err || !users) {
                 return res.status(400).json({
                     msg: "User not Found",
                 });

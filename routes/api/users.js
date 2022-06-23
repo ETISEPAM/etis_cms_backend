@@ -83,6 +83,8 @@ router.post("/registration", async (req, res) => {
 
 //List Users
 router.get("/", async (req, res) => {
+
+    ///Pagination
  
     const { page = 1, limit = 10 } = req.query;
 

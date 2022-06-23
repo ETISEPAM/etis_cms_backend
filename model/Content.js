@@ -7,13 +7,13 @@ const contentSchema = new Schema({
     {
       type: Schema.ObjectId,
       ref: "User",
-      required: true,
+      // required: true,
     },
   ],
   typeId: {
     type: Schema.ObjectId,
     ref: "ContentType",
-    required: true,
+    // required: true,
   },
   isPublished: {
     type: Boolean,
@@ -46,14 +46,17 @@ const contentSchema = new Schema({
   updatedBy: {
     type: Schema.ObjectId,
     ref: "User",
-    default: "",
   },
   tag: {
     type: Array,
     default: "",
   },
-  content: {
-    type: Object,
+  contentBody: {
+    type: {
+      title: String,
+      description: String,
+      body: String
+    },
   },
 });
 

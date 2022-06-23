@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const fieldSchema = new Schema({
     label: {
         type: String,
+        unique: true,
         // required: true,
     },
     dataType: {

@@ -1,90 +1,104 @@
 const express = require("express");
 const router = express.Router();
 const Content = require("../../model/Content");
+const ContentType = require("../../model/ContentType");
 const checkAuth = require("./middleware/checkAuth");
 const cookieParser = require("cookie-parser");
 
 router.use(cookieParser());
 
-// List All Contents
-router.get("/", (req, res) => {
-    Content.find((err, contents) => {
-        if (!err) {
-            res.status(200).json({
-                contents,
-            });
-        } else {
-            res.status(404).json({
-                msg: `Content List Not Found!`,
-            });
-        }
-    });
-});
-
-//Show One Content
-router.get("/:id", (req, res) => {
-    Content.findById(req.params.id, (err, content) => {
-        if (!err) {
-            res.status(200).json({
-                content,
-            });
-        } else {
-            res.status(404).json({
-                msg: `Content with ID: ${req.params.id} not found! `,
-            });
-        }
-    });
-});
-
 //CREATE New Content
-router.post(
-    "/",
-    /*checkAuth,*/ (req, res) => {
-        let { title, body } = req.body;
-        Content.findOne({
-            "contentBody.title": title,
-            "contentBody.body": body,
+router.post("/", async (req, res) => {
+    let { label, value } = req.body;
+    let userID = req.cookies.userID;
+    let tagsArr = req.body.tags.split(", ");
+
+    const isFound = await Content.findOne({
+        "contentFields.label": label,
+        "contentFields.value": value,
+        new: true,
+    });
+
+    if (isFound) {
+        res.status(409).json({
+            Message: `Content with the title of '${label}' already exists`,
+        });
+    } else {
+        const newContent = new Content({
+            typeId: req.body.typeId,
+            contentFields: { label, value },
+            ownerInfo: userID,
+            tags: tagsArr,
             new: true,
-        }).then((content) => {
-            if (content) {
-                return res.status(409).json({
-                    msg: `Content with the title of '${title}' already exists`,
-                });
+        });
+
+        await newContent.save().then(
+            res.status(201).json({
+                Status: res.status,
+                Message: `New Content Created`,
+                newContent,
+            })
+        );
+    }
+});
+
+//READ All Contents
+router.get("/", async (req, res) => {
+    Content.find({})
+        .populate("ownerInfo")
+        .exec((err, contents) => {
+            if (contents) {
+                res.status(200).json(contents);
             } else {
-                const newContent = new Content({
-                    ownerId: req.cookies.userID,
-                    contentBody: { title, body },
-                });
-                newContent.save().then(() => {
-                    return res.status(201).json({
-                        success: true,
-                        msg: "Content Created",
-                        newContent,
-                    });
+                res.status(404).json({
+                    ERR: err.name,
+                    ERR_MSG: err.message,
                 });
             }
         });
-    }
-);
+});
 
-//UPDATE Specific Content
+//READ Specific Content with ID
+router.get("/:id", async (req, res) => {
+    let contentID = req.params.id;
+    Content.findById(contentID)
+        .populate("ownerInfo")
+        .exec((err, content) => {
+            if (content) {
+                res.status(200).json(content);
+            } else {
+                res.status(400).json({
+                    ERR: err.name,
+                    ERR_MSG: err.message,
+                });
+            }
+        });
+});
+
+//UPDATE Specific Content with ID
 router.patch("/:id", (req, res) => {
-    const id = req.params.id;
+    const contentID = req.params.id;
+    let tagsArr = req.body.tags.split(", ");
     Content.findByIdAndUpdate(
-        id,
+        contentID,
         {
-            "contentBody.title": req.body.title,
-            "contentBody.body": req.body.body,
+            "contentFields.label": req.body.label,
+            "contentFields.value": req.body.value,
+            tags: req.body.updatedTags,
+            isPublished: req.body.isPublished,
+            showAuthor: req.body.showAuthor,
+            showDate: req.body.showDate,
+            tags: tagsArr,
         },
         { new: true },
         (err, content) => {
-            if (err || !content) {
-                return res.status(400).json({
-                    msg: "No Content Found",
+            if (err) {
+                res.status(400).json({
+                    ERR_MSG: err.message,
                 });
             } else {
-                return res.status(200).json({
-                    msg: "Content Title Updated Successfully!",
+                res.status(200).json({
+                    Message: `Content with the ID: ${contentID} Updated!`,
                     content,
                 });
             }
@@ -92,18 +106,18 @@ router.patch("/:id", (req, res) => {
     );
 });
 
-//DELETE Specific Content
+// DELETE Specific Content
 router.delete("/:id", (req, res) => {
-    const id = req.params.id;
-    Content.findByIdAndDelete(id, (err, content) => {
+    const contentID = req.params.id;
+    Content.findByIdAndDelete(contentID, (err, content) => {
         if (err || !content) {
-            return res.status(404).json({
-                msg: "Content Not Found",
+            res.status(404).json({
+                Message: "Content Not Found",
             });
         } else {
-            return res.status(204).json({
-                msg: "Content Deleted Successfully",
-                deletedContent: content,
+            res.status(200).json({
+                ERR_MSG: "Deleted Successfully",
+                DeletedContent: content,
             });
         }
     });

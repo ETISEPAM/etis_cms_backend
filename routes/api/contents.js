@@ -29,6 +29,9 @@ router.post("/", async (req, res) => {
             contentFields: { label, value },
             ownerInfo: userID,
             tags: tagsArr,
+            showAuthor: req.body.showAuthor,
+            isPublished: req.body.isPublished,
+            showDate: req.body.showDate,
             new: true,
         });
 
@@ -43,9 +46,13 @@ router.post("/", async (req, res) => {
 });
 
 //READ All Contents
-router.get("/", async (req, res) => {
+router.get("/", (req, res) => {
+    const { page = 1, limit = 5 } = req.query;
+
     Content.find({})
         .populate("ownerInfo")
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
         .exec((err, contents) => {
             if (contents) {
                 res.status(200).json(contents);
@@ -116,7 +123,7 @@ router.delete("/:id", (req, res) => {
             });
         } else {
             res.status(200).json({
-                ERR_MSG: "Deleted Successfully",
+                Message: "Deleted Successfully",
                 DeletedContent: content,
             });
         }

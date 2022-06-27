@@ -1,0 +1,119 @@
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+//create the user model
+const UserSchema = new Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    default: "user",
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+
+    default: "user@user.com",
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+
+  firstName: {
+    type: String,
+    required: true,
+    default: "John",
+  },
+  lastName: {
+    type: String,
+    required: true,
+    default: "Doe",
+  },
+  firstLogin: {
+    type: Boolean,
+    default: true,
+  },
+  profileImage: {
+    imgSrc: String,
+    maxImgWidth: Number,
+
+    maxImgHeight: Number,
+  },
+  userBio: {
+    type: String,
+    default: "Bio",
+  },
+  //Connect ContentType to User
+  //TODO: Check if used right.
+  userContentType: [
+    {
+      type: Schema.ObjectId,
+      ref: "ContentType",
+    },
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+
+    username: {
+        type: String,
+        required: true,
+        default: "user",
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        default: "user@user.com",
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+    firstName: {
+        type: String,
+        required: true,
+        default: "John",
+    },
+    lastName: {
+        type: String,
+        required: true,
+        default: "Doe",
+    },
+    firstLogin: {
+        type: Boolean,
+        default: true,
+    },
+    profileImage: {
+        imgSrc: String,
+        maxImgWidth: Number,
+        maxImgHeight: Number,
+    },
+    userBio: {
+        type: String,
+        default: "Bio",
+    },
+    //Connect ContentType to User
+    //TODO: Check if used right.
+    userContentType: [
+        {
+            type: Schema.ObjectId,
+            ref: "ContentType",
+        },
+    ],
+    userContent: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Content",
+        },
+    ],
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+});
+
+module.exports = User = mongoose.model("users", UserSchema);

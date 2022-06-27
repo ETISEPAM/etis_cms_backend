@@ -79,6 +79,7 @@ router.post("/registration", async (req, res) => {
             });
         });
     });
+   
 });
 
 //List Users
@@ -107,17 +108,22 @@ router.get("/", async (req, res) => {
 //TODO - CHECK params given in fromt +  CHECK LOGIC
 router.patch(
     "/:id",
-    /*checkAuth,*/ (req, res) => {
+    /*checkAuth,*/ async (req, res) => {
         const id = req.cookies.userID;
+        //hash the password for update
+        const salt = await bcrypt.genSalt(10)
+        const hashPassword = await bcrypt.hash(req.body.password, salt)
+
+
         User.findOneAndUpdate(
             id,
             {
                 username: req.body.username,
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
-                //PASSWORD HASHLENECEK
-                password: req.body.password,
+                password: hashPassword
             },
+
             { new: true },
             (err, user) => {
                 if (err || !user) {
@@ -176,4 +182,7 @@ router.get("/:id", async (req, res, next) => {
             );
         });
 });
+
+
+
 module.exports = router;

@@ -15,7 +15,6 @@ router.post(
     let userID = req.cookies.userID;
         // let fieldsArr = req.body.fieldBody.split(", ");
 
-        let { name, description } = req.body;
         await ContentType.findOne({ name: name }).then((contentType) => {
             if (contentType) {
                 return res.status(409).json({
@@ -44,7 +43,7 @@ router.post(
 //Get All Content Types
 router.get(
     "/",
-    /*checkAuth*/ (req, res, next) => {
+    /*checkAuth*/ async (req, res, next) => {
         
 
     let foundContentType = await ContentType.findOne({ name: name });

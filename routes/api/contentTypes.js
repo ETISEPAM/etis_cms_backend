@@ -33,6 +33,7 @@ router.post(
         });
     }
 );
+
 //Get All Content Types
 router.get(
     "/",
@@ -59,6 +60,9 @@ router.get(
             console.error(err.message);
         }
 
+        
+
+
         ContentType.find((err, docs) => {
             if (!err) {
                 //pagination
@@ -79,6 +83,9 @@ router.get(
                 });
             }
         });
+
+
+        
     }
 );
 
@@ -110,7 +117,7 @@ router.delete("/:id", async (req, res, next) => {
 
 //Update content type according to id
 
-router.patch("/:id", async (req, res, next) => {
+router.patch("/:id", async (req, res) => {
     if (!req.body) {
         return res.status(400).send({
             message: "Data to update can not be empty",
@@ -120,7 +127,7 @@ router.patch("/:id", async (req, res, next) => {
     ContentType.findByIdAndUpdate(
         id,
         req.body,
-        { useFindAndModify: false },
+        
         { new: true }
     )
 

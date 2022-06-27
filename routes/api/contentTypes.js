@@ -68,59 +68,54 @@ router.get("/:id", async (req, res) => {
         });
 });
 
-//Delete content type according to id
-router.delete("/:id", async (req, res, next) => {
-    const id = req.params.id;
-    ContentType.findByIdAndRemove(id)
-        .then((data) => {
-            if (!data) {
-                res.status(404).send({
-                    message: `Cannot delete content type with id =${id}`,
-                });
-            } else {
-                res.send({
-                    message: "Delete is succeed",
-                    deletedData: data,
-                });
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: "could not delete content type with id" + id,
-            });
-        });
-});
+// //Delete content type according to id
+// router.delete("/:id", async (req, res, next) => {
+//     const id = req.params.id;
+//     ContentType.findByIdAndRemove(id)
+//         .then((data) => {
+//             if (!data) {
+//                 res.status(404).send({
+//                     message: `Cannot delete content type with id =${id}`,
+//                 });
+//             } else {
+//                 res.send({
+//                     message: "Delete is succeed",
+//                     deletedData: data,
+//                 });
+//             }
+//         })
+//         .catch((err) => {
+//             res.status(500).send({
+//                 message: "could not delete content type with id" + id,
+//             });
+//         });
+// });
 
-//Update content type according to id
+// //Update content type according to id
 
-router.patch("/:id", async (req, res) => {
-    if (!req.body) {
-        return res.status(400).send({
-            message: "Data to update can not be empty",
-        });
-    }
-    const id = req.params.id;
-    ContentType.findByIdAndUpdate(
-        id,
-        req.body,
+// router.patch("/:id", async (req, res) => {
+//     if (!req.body) {
+//         return res.status(400).send({
+//             message: "Data to update can not be empty",
+//         });
+//     }
+//     const id = req.params.id;
+//     ContentType.findByIdAndUpdate(id, req.body, { new: true })
 
-        { new: true }
-    )
-
-        .then((data) => {
-            if (!data) {
-                res.status(404).send({
-                    message: `Can not update the content type with id=${id}`,
-                });
-            } else {
-                res.send({ message: "Updated succesfully", data });
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: `Error updating content type with id= ${id}`,
-            });
-        });
-});
+//         .then((data) => {
+//             if (!data) {
+//                 res.status(404).send({
+//                     message: `Can not update the content type with id=${id}`,
+//                 });
+//             } else {
+//                 res.send({ message: "Updated succesfully", data });
+//             }
+//         })
+//         .catch((err) => {
+//             res.status(500).send({
+//                 message: `Error updating content type with id= ${id}`,
+//             });
+//         });
+// });
 
 module.exports = router;

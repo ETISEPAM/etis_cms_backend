@@ -13,7 +13,6 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         unique: true,
-
         default: "user@user.com",
     },
     password: {
@@ -49,54 +48,19 @@ const UserSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-
-    username: {
-        type: String,
-        required: true,
-        default: "user",
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        default: "user@user.com",
-    },
-    password: {
-        type: String,
-        required: true,
-    },
-    firstName: {
-        type: String,
-        required: true,
-        default: "John",
-    },
-    lastName: {
-        type: String,
-        required: true,
-        default: "Doe",
-    },
-    firstLogin: {
-        type: Boolean,
-        default: true,
-    },
-    profileImage: {
-        imgSrc: String,
-        maxImgWidth: Number,
-        maxImgHeight: Number,
-    },
     //Connect ContentType to User
     //TODO: Check if used right.
     userContentType: [
         {
             type: Schema.ObjectId,
-            ref: "ContentType",
+            ref: "content_types",
         },
     ],
     //User altında content id'lerinin array'i tutulacak
     userContent: [
         {
             type: Schema.Types.ObjectId,
-            ref: "Content",
+            ref: "contents",
         },
     ],
     createdAt: {

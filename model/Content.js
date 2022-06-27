@@ -7,10 +7,9 @@ const contentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "users",
     },
-    typeId: {
+    ctInfo: {
         type: Schema.Types.ObjectId,
         ref: "content_types",
-        // required: true,
     },
     isPublished: {
         type: Boolean,

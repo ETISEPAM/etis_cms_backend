@@ -10,11 +10,15 @@ router.use(cookieParser());
 //CREATE New Content
 router.post("/", async (req, res) => {
     let { label, value, showAuthor, isPublished, showDate } = req.body;
-
     let userID = req.cookies.userID;
-
     let tagsArr = req.body.tags.split(", ");
 
+    let ctName = req.body.ctName;
+
+    const foundCtObj = await ContentType.findOne({
+        name: ctName,
+    });
+    console.log(foundCtObj);
     const isFound = await Content.findOne({
         //Content Type'ı oluşturan field'ları kontrol et!
         //isUnique === true ? ERR : SUCC
@@ -28,12 +32,11 @@ router.post("/", async (req, res) => {
 
     if (isFound) {
         res.status(409).json({
-            Message: `Content with the title of '${label}' already exists`,
+            Message: `Content with the title of '${isUnique}' already exists`,
         });
     } else {
         const newContent = new Content({
-            typeId: req.body.typeId,
-            contentFields: { label, value },
+            ctInfo: foundCtObj._id,
             ownerInfo: userID,
             tags: tagsArr,
             showAuthor: showAuthor,
@@ -51,36 +54,13 @@ router.post("/", async (req, res) => {
         );
     }
 });
-// List All Contents
-router.get("/", async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
-
-    try {
-        // execute query with page and limit values
-        const contents = await Content.find()
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .exec();
-
-        // get total documents in the Posts collection
-        const count = Content.countDocuments();
-
-        // return response with posts, total pages, and current page
-        res.json({
-            contents,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page,
-        });
-    } catch (err) {
-        console.error(err.message);
-    }
-});
 
 //READ All Contents
 router.get("/", (req, res) => {
     const { page = 1, limit = 100 } = req.query;
     Content.find({})
         .populate("ownerInfo")
+        .populate("ctInfo")
         .limit(limit * 1)
         .skip((page - 1) * limit)
         .exec((err, contents) => {

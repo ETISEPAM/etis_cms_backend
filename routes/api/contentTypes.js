@@ -23,6 +23,7 @@ router.post("/", async (req, res) => {
             name: req.body.name,
             description: req.body.description,
             ownerInfo: userID,
+            fields: req.body.fields,
         });
 
         await newContentType.save().then(

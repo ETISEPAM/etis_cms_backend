@@ -32,8 +32,9 @@ router.post("/", async (req, res) => {
             showAuthor: req.body.showAuthor,
             isPublished: req.body.isPublished,
             showDate: req.body.showDate,
-            new: true,
-        });
+            new: true})
+        }
+
 
         await newContent.save().then(
             res.status(201).json({
@@ -42,12 +43,11 @@ router.post("/", async (req, res) => {
                 newContent,
             })
         );
+    });
 
 // List All Contents
 router.get("/",  async(req, res) => {
     
-
-    //pagination
     const { page = 1, limit = 10 } = req.query;
 
     try {

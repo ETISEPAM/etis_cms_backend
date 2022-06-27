@@ -3,56 +3,50 @@ const Schema = mongoose.Schema;
 
 //create the ContentType model
 const contentTypeSchema = new Schema({
-  description: {
-    type: String,
-    required: true,
-  },
-  fields: [
-    {
-      type: Schema.ObjectId,
-      ref: "Fields",
+    description: {
+        type: String,
+        required: true,
     },
-  ],
-  name: {
-    type: String,
-    required: true,
-  },
-  ownerId: {
-    type: Schema.ObjectId,
-    ref: "User",
-    // required: true,
-  },
-  version: {
-    type: String,
-    // required: true,
-    default: "0.0.0",
-  },
-  contents: [
-    {
-      type: Schema.ObjectId,
-      ref: "Content",
+    fields: [
+        {
+            // type: Schema.ObjectId,
+            // ref: "fields",
+        },
+    ],
+    name: {
+        type: String,
+        required: true,
     },
-  ],
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  createdBy: {
-    type: Schema.ObjectId,
-    ref: "User",
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedBy: {
-    type: Schema.ObjectId,
-    ref: "User",
-    // default: ""
-  },
+    ownerInfo: {
+        type: Schema.Types.ObjectId,
+        ref: "users",
+        // required: true,
+    },
+    version: {
+        type: String,
+        // required: true,
+        default: "0.0.0",
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    createdBy: {
+        type: Schema.ObjectId,
+        ref: "users",
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    },
+    updatedBy: {
+        type: Schema.ObjectId,
+        ref: "users",
+        // default: ""
+    },
 });
 
 module.exports = ContentType = mongoose.model(
-  "content_type",
-  contentTypeSchema
+    "content_types",
+    contentTypeSchema
 );

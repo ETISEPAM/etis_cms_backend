@@ -3,60 +3,52 @@ const Schema = mongoose.Schema;
 
 //create the user model
 const UserSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    default: "user",
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-
-    default: "user@user.com",
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-
-  firstName: {
-    type: String,
-    required: true,
-    default: "John",
-  },
-  lastName: {
-    type: String,
-    required: true,
-    default: "Doe",
-  },
-  firstLogin: {
-    type: Boolean,
-    default: true,
-  },
-  profileImage: {
-    imgSrc: String,
-    maxImgWidth: Number,
-
-    maxImgHeight: Number,
-  },
-  userBio: {
-    type: String,
-    default: "Bio",
-  },
-  //Connect ContentType to User
-  //TODO: Check if used right.
-  userContentType: [
-    {
-      type: Schema.ObjectId,
-      ref: "ContentType",
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+        default: "user",
     },
-  ],
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+
+        default: "user@user.com",
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+
+    firstName: {
+        type: String,
+        required: true,
+        default: "John",
+    },
+    lastName: {
+        type: String,
+        required: true,
+        default: "Doe",
+    },
+    firstLogin: {
+        type: Boolean,
+        default: true,
+    },
+    profileImage: {
+        imgSrc: String,
+        maxImgWidth: Number,
+
+        maxImgHeight: Number,
+    },
+    userBio: {
+        type: String,
+        default: "Bio",
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
 
     username: {
         type: String,
@@ -92,10 +84,6 @@ const UserSchema = new Schema({
         maxImgWidth: Number,
         maxImgHeight: Number,
     },
-    userBio: {
-        type: String,
-        default: "Bio",
-    },
     //Connect ContentType to User
     //TODO: Check if used right.
     userContentType: [
@@ -104,6 +92,7 @@ const UserSchema = new Schema({
             ref: "ContentType",
         },
     ],
+    //User altında content id'lerinin array'i tutulacak
     userContent: [
         {
             type: Schema.Types.ObjectId,

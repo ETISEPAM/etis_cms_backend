@@ -118,6 +118,8 @@ router.patch(
                 username: req.body.username,
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
+                //PASSWORD HASHLENECEK
+                password: req.body.password,
             },
             { new: true },
             (err, user) => {

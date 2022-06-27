@@ -9,7 +9,7 @@ const contentSchema = new Schema({
     },
     typeId: {
         type: Schema.Types.ObjectId,
-        ref: "ContentType",
+        ref: "content_types",
         // required: true,
     },
     isPublished: {
@@ -33,16 +33,16 @@ const contentSchema = new Schema({
         default: Date.now,
     },
     createdBy: {
-        type: Schema.ObjectId,
-        ref: "User",
+        type: Schema.Types.ObjectId,
+        ref: "users",
     },
     updatedAt: {
         type: Date,
         default: Date.now,
     },
     updatedBy: {
-        type: Schema.ObjectId,
-        ref: "User",
+        type: Schema.Types.ObjectId,
+        ref: "users",
     },
     tags: {
         type: Array,

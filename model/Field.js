@@ -9,7 +9,7 @@ const fieldSchema = new Schema({
         // required: true,
     },
     dataType: {
-        type: String,
+        type: Schema.Types.Mixed,
         // required: true,
     },
     isMandatory: {
@@ -19,15 +19,6 @@ const fieldSchema = new Schema({
     isUnique: {
         type: Boolean,
         default: false,
-    },
-    fieldBody: {
-        type: {
-            default: "",
-            minVal: Number,
-            maxVal: Number,
-            mVal: Date,
-            maVal: Date,
-        },
     },
 });
 

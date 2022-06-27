@@ -41,6 +41,7 @@ router.post("/", async (req, res) => {
             showDate: showDate,
             new: true,
         });
+          
 
         await newContent.save().then(
             res.status(201).json({
@@ -51,6 +52,9 @@ router.post("/", async (req, res) => {
         );
     }
 });
+    });
+
+
 // List All Contents
 router.get("/", async (req, res) => {
     const { page = 1, limit = 10 } = req.query;

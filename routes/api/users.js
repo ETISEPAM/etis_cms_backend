@@ -85,7 +85,6 @@ router.post("/registration", async (req, res) => {
 router.get("/", async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
 
-    try {
         // execute query with page and limit values
         const users = await User.find()
             .limit(limit * 1)
@@ -93,7 +92,7 @@ router.get("/", async (req, res) => {
             .exec();
 
         // get total documents in the Posts collection
-        const count = await User.countDocuments();
+        const count =  User.countDocuments();
 
         // return response with posts, total pages, and current page
         res.json({
@@ -101,9 +100,7 @@ router.get("/", async (req, res) => {
             totalPages: Math.ceil(count / limit),
             currentPage: page,
         });
-    } catch (err) {
-        console.error(err.message);
-    }
+   
 });
 
 //UPDATE User
@@ -160,4 +157,23 @@ router.delete(
     }
 );
 
+
+//Get the content type with specific id
+router.get("/:id", async (req, res, next) => {
+    const id = req.params.id;
+    User.findById(id)
+        .then((data) => {
+            if (!data) {
+                res.status(404).send({
+                    message: "Not found user with id" + id,
+                });
+            } else res.send(data);
+        })
+        .catch((err) => {
+            res.status(500).send(
+                { message: "Error while retrieving the user with id" } +
+                    id
+            );
+        });
+});
 module.exports = router;

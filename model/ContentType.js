@@ -43,7 +43,7 @@ const contentTypeSchema = new Schema({
         type: Schema.ObjectId,
         ref: "users",
         // default: ""
-    },
+    }
 });
 
 module.exports = ContentType = mongoose.model(

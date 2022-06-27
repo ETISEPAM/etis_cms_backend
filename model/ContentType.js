@@ -8,14 +8,14 @@ const contentTypeSchema = new Schema({
     required: true,
   },
   fields: 
-    {
-      type: {
+    [
+      {
         label: String,
         dataType: String,
         isMandatory: Boolean,
         isUnique: Boolean
       }
-    },
+    ],
   name: {
     type: String,
     required: true,

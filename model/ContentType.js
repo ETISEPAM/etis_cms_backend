@@ -7,12 +7,15 @@ const contentTypeSchema = new Schema({
     type: String,
     required: true,
   },
-  fields: [
+  fields: 
     {
-      type: Schema.ObjectId,
-      ref: "Fields",
+      type: {
+        label: String,
+        dataType: String,
+        isMandatory: Boolean,
+        isUnique: Boolean
+      }
     },
-  ],
   name: {
     type: String,
     required: true,

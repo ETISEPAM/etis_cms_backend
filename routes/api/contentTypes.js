@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const ContentType = require("../../model/ContentType");
 const checkAuth = require("./middleware/checkAuth");
+const cookieParser = require("cookie-parser");
+
+router.use(cookieParser());
 
 //Create New Content Type
 router.post(
@@ -14,12 +17,16 @@ router.post(
                     msg: "Content Type Already Exists!",
                 });
             } else {
-                const newContentType = new ContentType({ name, description });
+                const newContentType = new ContentType({
+                    name,
+                    description,
+                    ownerId: req.cookies.userID,
+                });
                 newContentType.save().then(() => {
                     return res.status(201).json({
                         success: true,
                         msg: "Content Type Created Successfully",
-                        newContent: newContentType
+                        newContent: newContentType,
                     });
                 });
             }
@@ -31,24 +38,44 @@ router.post(
 router.get(
     "/",
     /*checkAuth*/ (req, res, next) => {
+        const { page = 1, limit = 10 } = req.query;
+
+        try {
+            // execute query with page and limit values
+            const result = ContentType.find()
+                .limit(limit * 1)
+                .skip((page - 1) * limit)
+                .exec();
+
+            // get total documents in the Posts collection
+            const count = ContentType.countDocuments();
+
+            // return response with posts, total pages, and current page
+            res.json({
+                result,
+                totalPages: Math.ceil(count / limit),
+                currentPage: page,
+            });
+        } catch (err) {
+            console.error(err.message);
+        }
+
         
 
 
         ContentType.find((err, docs) => {
             if (!err) {
                 //pagination
-      
+
                 let contentTypeNameList = [];
 
                 // console.log(docs)
-             
-                docs.forEach((item) => {
 
+                docs.forEach((item) => {
                     contentTypeNameList.push({ name: item.name, id: item._id });
-                 });
+                });
                 return res.status(200).json({
-                    contentTypeNameList
-                    
+                    contentTypeNameList,
                 });
             } else {
                 return res.status(404).json({
@@ -72,12 +99,12 @@ router.delete("/:id", async (req, res, next) => {
         .then((data) => {
             if (!data) {
                 res.status(404).send({
-                    message: `Cannot delete content type with id =${id}`
+                    message: `Cannot delete content type with id =${id}`,
                 });
             } else {
                 res.send({
                     message: "Delete is succeed",
-                    deletedData:data
+                    deletedData: data,
                 });
             }
         })
@@ -110,8 +137,7 @@ router.patch("/:id", async (req, res) => {
                     message: `Can not update the content type with id=${id}`,
                 });
             } else {
-                res.send({ message: "Updated succesfully" ,data});
-                
+                res.send({ message: "Updated succesfully", data });
             }
         })
         .catch((err) => {
@@ -141,4 +167,3 @@ router.get("/:id", async (req, res, next) => {
 });
 
 module.exports = router;
-

@@ -10,6 +10,8 @@ router.use(cookieParser());
 router.post(
     "/",
     /*checkAuth*/ async (req, res) => {
+        // let fieldsArr = req.body.fieldBody.split(", ");
+
         let { name, description } = req.body;
         await ContentType.findOne({ name: name }).then((contentType) => {
             if (contentType) {
@@ -21,12 +23,14 @@ router.post(
                     name,
                     description,
                     ownerId: req.cookies.userID,
+                    
                 });
                 newContentType.save().then(() => {
                     return res.status(201).json({
                         success: true,
                         msg: "Content Type Created Successfully",
-                        newContent: newContentType,
+                        newContent: newContentType
+                        
                     });
                 });
             }

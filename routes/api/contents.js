@@ -9,6 +9,8 @@ router.use(cookieParser());
 // List All Contents
 router.get("/",  async(req, res) => {
     
+
+    //pagination
     const { page = 1, limit = 10 } = req.query;
 
     try {

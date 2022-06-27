@@ -3,13 +3,12 @@ const Schema = mongoose.Schema;
 
 //create the ContentType model
 const contentSchema = new Schema({
-    ownerId: {
+    ownerInfo: {
         type: Schema.Types.ObjectId,
-        ref: "User",
-        // required: true,
+        ref: "users",
     },
     typeId: {
-        type: Schema.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "ContentType",
         // required: true,
     },
@@ -45,15 +44,15 @@ const contentSchema = new Schema({
         type: Schema.ObjectId,
         ref: "User",
     },
-    tag: {
+    tags: {
         type: Array,
         default: "",
     },
-    contentBody: {
+    contentFields: {
         type: {
-            title: String,
-            description: String,
-            body: String,
+            label: String,
+            value: String,
+            dataType: String,
         },
     },
 });

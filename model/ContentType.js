@@ -9,7 +9,7 @@ const contentTypeSchema = new Schema({
     },
     fields: [
         {
-            // type: Schema.ObjectId,
+            // type: Schema.Types.ObjectId,
             // ref: "fields",
         },
     ],

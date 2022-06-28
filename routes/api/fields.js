@@ -3,6 +3,11 @@ const router = express.Router();
 const Field = require("../../model/Field");
 const checkAuth = require("./middleware/checkAuth");
 
+const cookieParser = require("cookie-parser");
+const ContentType = require("../../model/ContentType");
+
+router.use(cookieParser());
+
 //Lists All Fields
 router.get(
     "/",
@@ -54,6 +59,7 @@ router.post(
                     msg: `Field with the label of '${label}' already exists`,
                 });
             } else {
+                // hangi ct'ye field eklenecek     const foundCt = ContentType.findOne({})
                 const newField = new Field({
                     label: label,
                     dataType: dataType,

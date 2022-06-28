@@ -11,6 +11,11 @@ router.use(cookieParser());
 router.post("/", async (req, res) => {
     let { name, description } = req.body;
     let userID = req.cookies.userID;
+    let labelName = req.body.labelName;
+
+    const foundFieldObj = await Field.findOne({
+        label: labelName,
+    });
 
     let foundContentType = await ContentType.findOne({ name: name });
 
@@ -23,6 +28,7 @@ router.post("/", async (req, res) => {
             name: req.body.name,
             description: req.body.description,
             ownerInfo: userID,
+            fields: foundFieldObj,
         });
 
         await newContentType.save().then(

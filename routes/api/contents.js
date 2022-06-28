@@ -168,16 +168,12 @@ router.delete("/:id", (req, res) => {
 router.get("/tags/:tags", async (req,res)=>{
     let data = await Content.find(
         {
-            tags:  req.params.tags
-
+            tags:  req.query.tags
         }
-
     )
-
     res.send({
         data
     })
-
 })
 
 

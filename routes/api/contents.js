@@ -82,7 +82,7 @@ router.get("/", async (req, res) => {
 //READ All Contents
 router.get("/", (req, res) => {
     const { page = 1, limit = 100 } = req.query;
-    Content.find({})
+    Content.find({ isDeleted:'false' })
         .populate("ownerInfo")
         .limit(limit * 1)
         .skip((page - 1) * limit)

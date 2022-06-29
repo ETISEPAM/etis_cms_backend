@@ -7,34 +7,62 @@ const cookieParser = require("cookie-parser");
 
 router.use(cookieParser());
 
-//CREATE New Content Type
-router.post("/", async (req, res) => {
-    let { name, description } = req.body;
-    let userID = req.cookies.userID;
-
-    let foundContentType = await ContentType.findOne({ name: name });
-
-    if (foundContentType) {
-        res.status(409).json({
-            Message: `Content-Type with the name of ${name} already exists`,
+//Create New Content Type
+router.post(
+    "/",
+    /*checkAuth*/ async (req, res) => {
+        let { name, description } = req.body;
+        await ContentType.findOne({ name: name }).then((contentType) => {
+            if (contentType) {
+                return res.status(409).json({
+                    msg: "Content Type Already Exists!",
+                });
+            } else {
+                const newContentType = new ContentType({
+                    name,
+                    description,
+                    ownerId: req.cookies.userID,
+                });
+                newContentType.save().then(() => {
+                    return res.status(201).json({
+                        success: true,
+                        msg: "Content Type Created Successfully",
+                        newContent: newContentType,
+                    });
+                });
+            }
         });
-    } else {
-        const newContentType = new ContentType({
-            name: req.body.name,
-            description: req.body.description,
-            ownerInfo: userID,
-            fields: req.body.fields,
-        });
-
-        await newContentType.save().then(
-            res.status(201).json({
-                Status: res.status,
-                Message: `New Content-Type Created`,
-                newContentType,
-            })
-        );
     }
-});
+);
+
+//Get All Content Types
+router.get(
+    "/",
+    /*checkAuth*/ async (req, res, next) => {
+        let foundContentType = await ContentType.findOne({ name: name });
+
+        if (foundContentType) {
+            res.status(409).json({
+                Message: `Content-Type with the name of ${name} already exists`,
+            });
+        } else {
+            const newContentType = new ContentType({
+                name: req.body.name,
+                description: req.body.description,
+                ownerInfo: userID,
+                fields: req.body.fields,
+            });
+
+            await newContentType.save().then(
+                res.status(201).json({
+                    Status: res.status,
+                    Message: `New Content-Type Created`,
+                    newContentType,
+                })
+            );
+        }
+    }
+);
 
 //READ All Content Types
 router.get("/", async (req, res) => {

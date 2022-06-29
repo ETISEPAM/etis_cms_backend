@@ -5,13 +5,30 @@ const Schema = mongoose.Schema;
 const fieldSchema = new Schema({
     label: {
         type: String,
-        unique: true,
-        // required: true,
     },
-    dataType: {
-        type: Schema.Types.Mixed,
-        // required: true,
-    },
+    dataType: [
+        {
+            type: String,
+            default: "Def",
+            minLength: Number,
+            maxLength: Number,
+        },
+        {
+            type: Number,
+            default: 1,
+            minVal: Number,
+            maxVal: Number,
+        },
+        {
+            type: Boolean,
+            default: true,
+        },
+        {
+            type: Date,
+            minVal: Date,
+            maxVal: Date,
+        },
+    ],
     isMandatory: {
         type: Boolean,
         default: false,

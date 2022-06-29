@@ -7,10 +7,7 @@ const contentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "users",
     },
-    ctInfo: {
-        type: Schema.Types.ObjectId,
-        ref: "content_types",
-    },
+    ctInfo: {},
     isPublished: {
         type: Boolean,
         default: false,
@@ -47,12 +44,8 @@ const contentSchema = new Schema({
         type: Array,
         default: "",
     },
-    contentFields: {
-        type: {
-            label: String,
-            value: String,
-            dataType: String,
-        },
+    contentName: {
+        type: String,
     },
 });
 

@@ -12,33 +12,47 @@ router.post("/", async (req, res) => {
     let { label, value, showAuthor, isPublished, showDate } = req.body;
     let userID = req.cookies.userID;
     let tagsArr = req.body.tags.split(", ");
-
     let ctName = req.body.ctName;
+    let contentName = req.body.contentName;
 
     const foundCtObj = await ContentType.findOne({
         name: ctName,
     });
-    console.log(foundCtObj);
     const isFound = await Content.findOne({
         //Content Type'ı oluşturan field'ları kontrol et!
         //isUnique === true ? ERR : SUCC
-
         // TODO: DELETE THIS
-        "contentFields.label": label,
-        "contentFields.value": value,
+        contentName: contentName,
         // TODO: DELETE THIS
-        new: true,
     });
 
     if (isFound) {
         res.status(409).json({
-            Message: `Content with the title of '${isUnique}' already exists`,
+            Message: `Content with the title of '${label}' already exists`,
         });
     } else {
+        //Versioning
+        let majorIdx = 0;
+        let minorIdx = 1;
+        let patchIdx = 2;
+        let firstVersion = "0.0.0";
+        let versionDecimals = firstVersion.split(".");
+        [0, 0, 0];
+        //Update Major Version if Published
+        let isPublished = req.body.isPublished;
+        if (isPublished === "true") {
+            versionDecimals[majorIdx]++;
+            currentVersion = versionDecimals.join(".");
+            ("1.0.0");
+        } else {
+            currentVersion = firstVersion;
+        }
         const newContent = new Content({
-            ctInfo: foundCtObj._id,
+            contentName: contentName,
+            ctInfo: foundCtObj,
             ownerInfo: userID,
             tags: tagsArr,
+            version: currentVersion,
             showAuthor: showAuthor,
             isPublished: isPublished,
             showDate: showDate,
@@ -93,32 +107,48 @@ router.get("/:id", async (req, res) => {
 });
 
 //UPDATE Specific Content with ID
-router.patch("/:id", (req, res) => {
+router.patch("/:id", async (req, res) => {
     const contentID = req.params.id;
     let tagsArr = req.body.tags.split(", ");
-    Content.findByIdAndUpdate(
-        contentID,
+
+    let foundContent = await Content.findById(contentID);
+    let updatedContent = await Content.findByIdAndUpdate(
+        { _id: contentID },
         {
-            tags: req.body.updatedTags,
-            isPublished: req.body.isPublished,
-            showAuthor: req.body.showAuthor,
-            showDate: req.body.showDate,
-            tags: tagsArr,
+            contentName: req.body.contentName,
+            tags: req.body.tags,
         },
-        { new: true },
-        (err, content) => {
-            if (err) {
-                res.status(400).json({
-                    ERR_MSG: err.message,
-                });
-            } else {
-                res.status(200).json({
-                    Message: `Content with the ID: ${contentID} Updated!`,
-                    content,
-                });
-            }
-        }
+        { new: true }
     );
+    let currentVersion = foundContent.version;
+    let versionDecimals = currentVersion.split(".");
+    let patchIdx = 2;
+    if (updatedContent) {
+        if (
+            updatedContent.tags.every((item) =>
+                foundContent.tags.includes(item)
+            )
+        ) {
+            res.status(200).json({
+                Message: "GOGOGO",
+            });
+        } else {
+            versionDecimals[patchIdx]++;
+            currentVersion = versionDecimals.join(".");
+            Content.updateOne(
+                { _id: contentID },
+                {
+                    version: currentVersion,
+                }
+            ).exec((err, content) => {
+                if (content) {
+                    res.status(200).json({
+                        content,
+                    });
+                }
+            });
+        }
+    }
 });
 
 // DELETE Specific Content

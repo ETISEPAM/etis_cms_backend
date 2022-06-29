@@ -69,30 +69,10 @@ router.get("/:id", async (req, res) => {
         });
 });
 
-// //Delete content type according to id
-// router.delete("/:id", async (req, res, next) => {
-//     const id = req.params.id;
-//     ContentType.findByIdAndRemove(id)
-//         .then((data) => {
-//             if (!data) {
-//                 res.status(404).send({
-//                     message: `Cannot delete content type with id =${id}`,
-//                 });
-//             } else {
-//                 res.send({
-//                     message: "Delete is succeed",
-//                     deletedData: data,
-//                 });
-//             }
-//         })
-//         .catch((err) => {
-//             res.status(500).send({
-//                 message: "could not delete content type with id" + id,
-//             });
-//         });
-// });
-
-// //Update content type according to id
+// //UPDATE Specific Content-Type by ID
+// router.patch("/:id", async (req, res) => {
+//     ContentType.findByIdAndUpdate(id, req.body)
+// })
 
 // router.patch("/:id", async (req, res) => {
 //     if (!req.body) {
@@ -115,6 +95,29 @@ router.get("/:id", async (req, res) => {
 //         .catch((err) => {
 //             res.status(500).send({
 //                 message: `Error updating content type with id= ${id}`,
+//             });
+//         });
+// });
+
+// //Delete content type according to id
+// router.delete("/:id", async (req, res, next) => {
+//     const id = req.params.id;
+//     ContentType.findByIdAndRemove(id)
+//         .then((data) => {
+//             if (!data) {
+//                 res.status(404).send({
+//                     message: `Cannot delete content type with id =${id}`,
+//                 });
+//             } else {
+//                 res.send({
+//                     message: "Delete is succeed",
+//                     deletedData: data,
+//                 });
+//             }
+//         })
+//         .catch((err) => {
+//             res.status(500).send({
+//                 message: "could not delete content type with id" + id,
 //             });
 //         });
 // });

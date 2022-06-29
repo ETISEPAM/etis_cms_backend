@@ -37,7 +37,6 @@ router.post("/", async (req, res) => {
         let patchIdx = 2;
         let firstVersion = "0.0.0";
         let versionDecimals = firstVersion.split(".");
-        [0, 0, 0];
         //Update Major Version if Published
         let isPublished = req.body.isPublished;
         if (isPublished === "true") {

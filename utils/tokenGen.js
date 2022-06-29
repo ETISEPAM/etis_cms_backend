@@ -14,7 +14,7 @@ const generateToken = async (user, statusCode, res) => {
     res.status(statusCode)
         .cookie("token", token, options)
         .cookie("userID", user.id)
-        .json({ success: true, token, user });
+        .json({ success: true, token, user, userID });
     return token;
 };
 

@@ -49,6 +49,7 @@ const contentSchema = new Schema({
     },
     isDeleted: {
         type: Boolean,
+        default: false,
     },
 });
 

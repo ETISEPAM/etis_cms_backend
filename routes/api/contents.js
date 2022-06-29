@@ -72,7 +72,7 @@ router.post("/", async (req, res) => {
 //READ All Contents
 router.get("/", (req, res) => {
     const { page = 1, limit = 100 } = req.query;
-    Content.find({})
+    Content.find({ isDeleted: "false" })
         .populate("ownerInfo")
         .populate("ctInfo")
         .limit(limit * 1)
@@ -151,20 +151,36 @@ router.patch("/:id", async (req, res) => {
     }
 });
 
-// DELETE Specific Content
-router.delete("/:id", (req, res) => {
+// Soft delete
+router.patch("/delete/:id", (req, res) => {
     const contentID = req.params.id;
-    Content.findByIdAndDelete(contentID, (err, content) => {
-        if (err || !content) {
-            res.status(404).json({
-                Message: "Content Not Found",
-            });
-        } else {
-            res.status(200).json({
-                Message: "Deleted Successfully",
-                DeletedContent: content,
-            });
+    Content.findByIdAndUpdate(
+        contentID,
+        {
+            isDeleted: true,
+        },
+        { new: true },
+        (err, content) => {
+            if (err) {
+                res.status(400).json({
+                    ERR_MSG: err.message,
+                });
+            } else {
+                res.status(200).json({
+                    Message: `Content with the ID: ${contentID} Deleted!`,
+                    content,
+                });
+            }
         }
+    );
+});
+//Filter contents according to tags
+router.get("/tags/:tags", async (req, res) => {
+    let data = await Content.find({
+        tags: req.query.tags,
+    });
+    res.send({
+        data,
     });
 });
 

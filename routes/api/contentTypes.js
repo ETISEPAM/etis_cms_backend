@@ -12,6 +12,8 @@ router.post(
     "/",
     /*checkAuth*/ async (req, res) => {
         let { name, description } = req.body;
+        let userID = req.cookies.userID;
+
         await ContentType.findOne({ name: name }).then((contentType) => {
             if (contentType) {
                 return res.status(409).json({

@@ -22,11 +22,11 @@ const fieldSchema = new Schema({
     },
     fieldBody: {
         type: {
-            default: "",
+            defaultValue: String,
             minVal: Number,
             maxVal: Number,
-            mVal: Date,
-            maVal: Date,
+            minDate: Date,
+            maxDate: Date,
         },
     },
 });

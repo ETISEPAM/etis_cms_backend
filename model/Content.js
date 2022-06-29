@@ -3,14 +3,13 @@ const Schema = mongoose.Schema;
 
 //create the ContentType model
 const contentSchema = new Schema({
-    ownerId: {
+    ownerInfo: {
         type: Schema.Types.ObjectId,
-        ref: "User",
-        // required: true,
+        ref: "users",
     },
     typeId: {
-        type: Schema.ObjectId,
-        ref: "ContentType",
+        type: Schema.Types.ObjectId,
+        ref: "content_types",
         // required: true,
     },
     isPublished: {
@@ -34,26 +33,26 @@ const contentSchema = new Schema({
         default: Date.now,
     },
     createdBy: {
-        type: Schema.ObjectId,
-        ref: "User",
+        type: Schema.Types.ObjectId,
+        ref: "users",
     },
     updatedAt: {
         type: Date,
         default: Date.now,
     },
     updatedBy: {
-        type: Schema.ObjectId,
-        ref: "User",
+        type: Schema.Types.ObjectId,
+        ref: "users",
     },
-    tag: {
+    tags: {
         type: Array,
         default: "",
     },
-    contentBody: {
+    contentFields: {
         type: {
-            title: String,
-            description: String,
-            body: String,
+            label: String,
+            value: String,
+            dataType: String,
         },
     },
 });

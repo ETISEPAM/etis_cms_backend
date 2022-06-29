@@ -7,35 +7,38 @@ const cookieParser = require("cookie-parser");
 
 router.use(cookieParser());
 
-//Create New Content Type
-router.post(
-    "/",
-    /*checkAuth*/ async (req, res) => {
-        let { name, description } = req.body;
-        let userID = req.cookies.userID;
+//CREATE New Content Type
+router.post("/", async (req, res) => {
+    let { name, description } = req.body;
+    let userID = req.cookies.userID;
+    let labelName = req.body.labelName;
 
-        await ContentType.findOne({ name: name }).then((contentType) => {
-            if (contentType) {
-                return res.status(409).json({
-                    msg: "Content Type Already Exists!",
+    const foundFieldObj = await Field.findOne({
+        label: labelName,
+    });
+
+    await ContentType.findOne({ name: name }).then((contentType) => {
+        if (contentType) {
+            return res.status(409).json({
+                msg: "Content Type Already Exists!",
+            });
+        } else {
+            const newContentType = new ContentType({
+                name: req.body.name,
+                description: req.body.description,
+                ownerInfo: userID,
+                fields: foundFieldObj,
+            });
+            newContentType.save().then(() => {
+                return res.status(201).json({
+                    success: true,
+                    msg: "Content Type Created Successfully",
+                    newContent: newContentType,
                 });
-            } else {
-                const newContentType = new ContentType({
-                    name,
-                    description,
-                    ownerId: req.cookies.userID,
-                });
-                newContentType.save().then(() => {
-                    return res.status(201).json({
-                        success: true,
-                        msg: "Content Type Created Successfully",
-                        newContent: newContentType,
-                    });
-                });
-            }
-        });
-    }
-);
+            });
+        }
+    });
+});
 
 //Get All Content Types
 router.get(

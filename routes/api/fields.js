@@ -3,6 +3,11 @@ const router = express.Router();
 const Field = require("../../model/Field");
 const checkAuth = require("./middleware/checkAuth");
 
+const cookieParser = require("cookie-parser");
+const ContentType = require("../../model/ContentType");
+
+router.use(cookieParser());
+
 //Lists All Fields
 router.get(
     "/",
@@ -26,12 +31,27 @@ router.get(
 router.post(
     "/",
     /*checkAuth*/ (req, res) => {
-        let { label, dataType, minVal, maxVal } = req.body;
+        let {
+            label,
+            dataType,
+            minVal,
+            maxVal,
+            isMandatory,
+            isUnique,
+            defaultValue,
+            minDate,
+            maxDate,
+        } = req.body;
         Field.findOne({
             label: label,
             dataType: dataType,
+            isMandatory: isMandatory,
+            isUnique: isUnique,
             "fieldBody.minVal": minVal,
             "fieldBody.maxVal": maxVal,
+            "fieldBody.minDate": minDate,
+            "fieldBody.maxDate": maxDate,
+            "fieldBody.defaultValue": defaultValue,
         }).then((field) => {
             if (field) {
                 return res.status(409).json({
@@ -39,10 +59,20 @@ router.post(
                     msg: `Field with the label of '${label}' already exists`,
                 });
             } else {
+                // hangi ct'ye field eklenecek     const foundCt = ContentType.findOne({})
                 const newField = new Field({
                     label: label,
                     dataType: dataType,
-                    fieldBody: { maxVal, minVal },
+                    isMandatory: isMandatory,
+                    isUnique: isUnique,
+
+                    fieldBody: {
+                        maxVal,
+                        minVal,
+                        defaultValue,
+                        maxDate,
+                        minDate,
+                    },
                 });
 
                 newField.save().then(() => {
@@ -104,8 +134,13 @@ router.patch(
             {
                 label: req.body.label,
                 dataType: req.body.dataType,
+                isMandatory: req.body.isMandatory,
+                isUnique: req.body.isUnique,
                 "fieldBody.minVal": req.body.minVal,
                 "fieldBody.maxVal": req.body.maxVal,
+                "fieldBody.minDate": req.body.minDate,
+                "fieldBody.maxDate": req.body.maxDate,
+                "fieldBody.defaultValue": req.body.defaultValue,
             },
             { new: true },
             (err, field) => {

@@ -8,29 +8,10 @@ const contentTypeSchema = new Schema({
         required: true,
     },
     fields: [
-        // {
-        // String {
-        //     minLength: Number,
-        //     maxLength: Number,
-        //     isMandatory: Boolean,
-        //     isUnique: Boolean,
-        // },
-        // Number {
-        //     minValue: Number,
-        //     maxValue: Number,
-        //     isMandatory: Boolean,
-        //     isUnique: Boolean,
-        // },
-        // Boolean {
-        //     ...
-        // },
-        // Date{
-        //     ...
-        // },
-        // File{
-        //     ...
-        // }
-        // },
+        {
+            // type: Schema.Types.ObjectId,
+            // ref: "fields",
+        },
     ],
     name: {
         type: String,
@@ -62,7 +43,7 @@ const contentTypeSchema = new Schema({
         type: Schema.ObjectId,
         ref: "users",
         // default: ""
-    }
+    },
 });
 
 module.exports = ContentType = mongoose.model(

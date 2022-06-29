@@ -5,6 +5,12 @@ const Schema = mongoose.Schema;
 const fieldSchema = new Schema({
     label: {
         type: String,
+        unique: true,
+        // required: true,
+    },
+    dataType: {
+        type: String,
+        // required: true,
     },
     dataType: [
         {
@@ -36,6 +42,15 @@ const fieldSchema = new Schema({
     isUnique: {
         type: Boolean,
         default: false,
+    },
+    fieldBody: {
+        type: {
+            defaultValue: String,
+            minVal: Number,
+            maxVal: Number,
+            minDate: Date,
+            maxDate: Date,
+        },
     },
 });
 

@@ -55,35 +55,10 @@ router.post("/", async (req, res) => {
   
 
 
-// List All Contents
-router.get("/", async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
-
-    try {
-        // execute query with page and limit values
-        const contents = await Content.find()
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .exec();
-
-        // get total documents in the Posts collection
-        const count = Content.countDocuments();
-
-        // return response with posts, total pages, and current page
-        res.json({
-            contents,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page,
-        });
-    } catch (err) {
-        console.error(err.message);
-    }
-});
-
 //READ All Contents
 router.get("/", (req, res) => {
     const { page = 1, limit = 100 } = req.query;
-    Content.find({})
+    Content.find({ isDeleted:'false' })
         .populate("ownerInfo")
         .limit(limit * 1)
         .skip((page - 1) * limit)
@@ -120,6 +95,7 @@ router.get("/:id", async (req, res) => {
 router.patch("/:id", (req, res) => {
     const contentID = req.params.id;
     let tagsArr = req.body.tags.split(", ");
+    
     Content.findByIdAndUpdate(
         contentID,
         {
@@ -145,21 +121,46 @@ router.patch("/:id", (req, res) => {
     );
 });
 
-// DELETE Specific Content
-router.delete("/:id", (req, res) => {
+// Soft delete
+router.patch("/delete/:id", (req, res) => {
     const contentID = req.params.id;
-    Content.findByIdAndDelete(contentID, (err, content) => {
-        if (err || !content) {
-            res.status(404).json({
-                Message: "Content Not Found",
+    Content.findByIdAndUpdate(
+     contentID,
+     {
+        isDeleted:true,
+     },
+     {new:true},
+     (err,content)=>{
+        if(err){
+            res.status(400).json({
+                ERR_MSG: err.message,
             });
-        } else {
+        }else{
             res.status(200).json({
-                Message: "Deleted Successfully",
-                DeletedContent: content,
-            });
+                Message: `Content with the ID: ${contentID} Deleted!`,
+                content
+
+            })
         }
-    });
+     }
+);
 });
+
+
+
+
+//Filter contents according to tags
+router.get("/tags/:tags", async (req,res)=>{
+    let data = await Content.find(
+        {
+            tags:  req.query.tags
+        }
+    )
+    res.send({
+        data
+    })
+})
+
+
 
 module.exports = router;

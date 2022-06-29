@@ -11,11 +11,11 @@ router.use(cookieParser());
 router.post(
     "/",
     /*checkAuth*/ async (req, res) => {
-    let { name, description } = req.body;
-    let userID = req.cookies.userID;
         // let fieldsArr = req.body.fieldBody.split(", ");
 
         let { name, description } = req.body;
+        let userID = req.cookies.userID;
+
         await ContentType.findOne({ name: name }).then((contentType) => {
             if (contentType) {
                 return res.status(409).json({
@@ -41,34 +41,7 @@ router.post(
     }
 );
 
-//Get All Content Types
-router.get(
-    "/",
-    /*checkAuth*/ (req, res, next) => {
-        
 
-    let foundContentType = await ContentType.findOne({ name: name });
-
-    if (foundContentType) {
-        res.status(409).json({
-            Message: `Content-Type with the name of ${name} already exists`,
-        });
-    } else {
-        const newContentType = new ContentType({
-            name: req.body.name,
-            description: req.body.description,
-            ownerInfo: userID,
-        });
-
-        await newContentType.save().then(
-            res.status(201).json({
-                Status: res.status,
-                Message: `New Content-Type Created`,
-                newContentType,
-            })
-        );
-    }
-});
 
 //READ All Content Types
 router.get("/", async (req, res) => {
@@ -152,5 +125,9 @@ router.get("/:id", async (req, res) => {
 //             });
 //         });
 // });
+
+
+
+
 
 module.exports = router;

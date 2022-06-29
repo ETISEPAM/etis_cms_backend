@@ -44,10 +44,13 @@ const contentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "users",
     },
-    tags: {
-        type: Array,
-        default: "",
-    },
+    tags: 
+    [
+        {
+          type: String
+        }
+      ]
+    ,
     contentFields: {
         type: {
             label: String,
@@ -55,6 +58,10 @@ const contentSchema = new Schema({
             dataType: String,
         },
     },
+    isDeleted: {
+        type: Boolean
+
+    }
 });
 
 module.exports = Content = mongoose.model("contents", contentSchema);

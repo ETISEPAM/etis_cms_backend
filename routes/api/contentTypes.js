@@ -71,8 +71,12 @@ router.get(
 
 //READ All Content Types
 router.get("/", async (req, res) => {
+    const { page = 1, limit = 100 } = req.query;
+
     ContentType.find({})
         .populate("ownerInfo")
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
         .exec((err, contentTypes) => {
             if (contentTypes) {
                 res.status(200).json(contentTypes);

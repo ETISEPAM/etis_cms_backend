@@ -7,11 +7,7 @@ const contentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "users",
     },
-    typeId: {
-        type: Schema.Types.ObjectId,
-        ref: "content_types",
-        // required: true,
-    },
+    ctInfo: {},
     isPublished: {
         type: Boolean,
         default: false,
@@ -44,24 +40,16 @@ const contentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "users",
     },
-    tags: 
-    [
-        {
-          type: String
-        }
-      ]
-    ,
-    contentFields: {
-        type: {
-            label: String,
-            value: String,
-            dataType: String,
-        },
+    tags: {
+        type: Array,
+        default: "",
+    },
+    contentName: {
+        type: String,
     },
     isDeleted: {
-        type: Boolean
-
-    }
+        type: Boolean,
+    },
 });
 
 module.exports = Content = mongoose.model("contents", contentSchema);

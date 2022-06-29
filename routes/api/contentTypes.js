@@ -7,41 +7,67 @@ const cookieParser = require("cookie-parser");
 
 router.use(cookieParser());
 
-//Create New Content Type
-router.post(
+//CREATE New Content Type
+router.post("/", async (req, res) => {
+    let { name, description } = req.body;
+    let userID = req.cookies.userID;
+    let labelName = req.body.labelName;
+
+    const foundFieldObj = await Field.findOne({
+        label: labelName,
+    });
+
+    await ContentType.findOne({ name: name }).then((contentType) => {
+        if (contentType) {
+            return res.status(409).json({
+                msg: "Content Type Already Exists!",
+            });
+        } else {
+            const newContentType = new ContentType({
+                name: req.body.name,
+                description: req.body.description,
+                ownerInfo: userID,
+                fields: foundFieldObj,
+            });
+            newContentType.save().then(() => {
+                return res.status(201).json({
+                    success: true,
+                    msg: "Content Type Created Successfully",
+                    newContent: newContentType,
+                });
+            });
+        }
+    });
+});
+
+//Get All Content Types
+router.get(
     "/",
-    /*checkAuth*/ async (req, res) => {
-        // let fieldsArr = req.body.fieldBody.split(", ");
+    /*checkAuth*/ async (req, res, next) => {
+        let foundContentType = await ContentType.findOne({ name: name });
 
-        let { name, description } = req.body;
-        let userID = req.cookies.userID;
+        if (foundContentType) {
+            res.status(409).json({
+                Message: `Content-Type with the name of ${name} already exists`,
+            });
+        } else {
+            const newContentType = new ContentType({
+                name: req.body.name,
+                description: req.body.description,
+                ownerInfo: userID,
+                fields: req.body.fields,
+            });
 
-        await ContentType.findOne({ name: name }).then((contentType) => {
-            if (contentType) {
-                return res.status(409).json({
-                    msg: "Content Type Already Exists!",
-                });
-            } else {
-                const newContentType = new ContentType({
-                    name,
-                    description,
-                    ownerId: req.cookies.userID,
-                    
-                });
-                newContentType.save().then(() => {
-                    return res.status(201).json({
-                        success: true,
-                        msg: "Content Type Created Successfully",
-                        newContent: newContentType
-                        
-                    });
-                });
-            }
-        });
+            await newContentType.save().then(
+                res.status(201).json({
+                    Status: res.status,
+                    Message: `New Content-Type Created`,
+                    newContentType,
+                })
+            );
+        }
     }
 );
-
-
 
 //READ All Content Types
 router.get("/", async (req, res) => {
@@ -76,30 +102,10 @@ router.get("/:id", async (req, res) => {
         });
 });
 
-// //Delete content type according to id
-// router.delete("/:id", async (req, res, next) => {
-//     const id = req.params.id;
-//     ContentType.findByIdAndRemove(id)
-//         .then((data) => {
-//             if (!data) {
-//                 res.status(404).send({
-//                     message: `Cannot delete content type with id =${id}`,
-//                 });
-//             } else {
-//                 res.send({
-//                     message: "Delete is succeed",
-//                     deletedData: data,
-//                 });
-//             }
-//         })
-//         .catch((err) => {
-//             res.status(500).send({
-//                 message: "could not delete content type with id" + id,
-//             });
-//         });
-// });
-
-// //Update content type according to id
+// //UPDATE Specific Content-Type by ID
+// router.patch("/:id", async (req, res) => {
+//     ContentType.findByIdAndUpdate(id, req.body)
+// })
 
 // router.patch("/:id", async (req, res) => {
 //     if (!req.body) {
@@ -126,8 +132,27 @@ router.get("/:id", async (req, res) => {
 //         });
 // });
 
-
-
-
+// //Delete content type according to id
+// router.delete("/:id", async (req, res, next) => {
+//     const id = req.params.id;
+//     ContentType.findByIdAndRemove(id)
+//         .then((data) => {
+//             if (!data) {
+//                 res.status(404).send({
+//                     message: `Cannot delete content type with id =${id}`,
+//                 });
+//             } else {
+//                 res.send({
+//                     message: "Delete is succeed",
+//                     deletedData: data,
+//                 });
+//             }
+//         })
+//         .catch((err) => {
+//             res.status(500).send({
+//                 message: "could not delete content type with id" + id,
+//             });
+//         });
+// });
 
 module.exports = router;

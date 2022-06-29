@@ -79,41 +79,52 @@ router.post("/registration", async (req, res) => {
             });
         });
     });
-   
 });
 
 //List Users
 router.get("/", async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
 
-        // execute query with page and limit values
-        const users = await User.find()
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .exec();
+    // execute query with page and limit values
+    const users = await User.find()
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .exec();
 
-        // get total documents in the Posts collection
-        const count =  User.countDocuments();
+    // get total documents in the Posts collection
+    const count = User.countDocuments();
 
-        // return response with posts, total pages, and current page
-        res.json({
-            users,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page,
-        });
-   
+    // return response with posts, total pages, and current page
+    res.json({
+        users,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
+    });
+});
+
+//READ Specific User with ID
+router.get("/:id", async (req, res) => {
+    const id = req.params.id;
+    User.findById(id).exec((err, user) => {
+        if (user) {
+            res.status(200).json(user);
+        } else {
+            res.status(400).json({
+                ERR: err.name,
+                ERR_MSG: err.message,
+            });
+        }
+    });
 });
 
 //UPDATE User
-//TODO - CHECK params given in fromt +  CHECK LOGIC
 router.patch(
     "/:id",
     /*checkAuth,*/ async (req, res) => {
         const id = req.cookies.userID;
         //hash the password for update
-        const salt = await bcrypt.genSalt(10)
-        const hashPassword = await bcrypt.hash(req.body.password, salt)
-
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(req.body.password, salt);
 
         User.findOneAndUpdate(
             id,
@@ -121,7 +132,8 @@ router.patch(
                 username: req.body.username,
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
-                password: hashPassword
+                email: req.body.email,
+                password: hashPassword,
             },
 
             { new: true },
@@ -138,10 +150,6 @@ router.patch(
                 }
             }
         );
-        /*
-   Will be added to the query depending on the front form params (What can be updated on front?)
-        |___{firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, username : req.body.username, role: req.body.role}
-  */
     }
 );
 
@@ -163,7 +171,6 @@ router.delete(
     }
 );
 
-
 //Get the content type with specific id
 router.get("/:id", async (req, res, next) => {
     const id = req.params.id;
@@ -177,12 +184,9 @@ router.get("/:id", async (req, res, next) => {
         })
         .catch((err) => {
             res.status(500).send(
-                { message: "Error while retrieving the user with id" } +
-                    id
+                { message: "Error while retrieving the user with id" } + id
             );
         });
 });
-
-
 
 module.exports = router;

@@ -9,7 +9,7 @@ const contentTypeSchema = new Schema({
     },
     fields: [
         {
-            // type: Schema.ObjectId,
+            // type: Schema.Types.ObjectId,
             // ref: "fields",
         },
     ],
@@ -43,7 +43,7 @@ const contentTypeSchema = new Schema({
         type: Schema.ObjectId,
         ref: "users",
         // default: ""
-    }
+    },
 });
 
 module.exports = ContentType = mongoose.model(

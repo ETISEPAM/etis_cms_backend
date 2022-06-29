@@ -30,7 +30,7 @@ router.get(
 //Add Field
 router.post(
     "/",
-    /*checkAuth*/ (req, res) => {
+    /*checkAuth*/ async (req, res) => {
         let {
             label,
             dataType,
@@ -41,6 +41,7 @@ router.post(
             defaultValue,
             minDate,
             maxDate,
+            ctTypeId,
         } = req.body;
         Field.findOne({
             label: label,
@@ -59,13 +60,17 @@ router.post(
                     msg: `Field with the label of '${label}' already exists`,
                 });
             } else {
+                const fieldCt = ContentType.findOne({
+                    ctTypeId: req.body.ctTypeId,
+                });
+
                 // hangi ct'ye field eklenecek     const foundCt = ContentType.findOne({})
                 const newField = new Field({
                     label: label,
                     dataType: dataType,
                     isMandatory: isMandatory,
                     isUnique: isUnique,
-
+                    ctTypeId: req.body.ctTypeId,
                     fieldBody: {
                         maxVal,
                         minVal,
@@ -74,6 +79,8 @@ router.post(
                         minDate,
                     },
                 });
+
+                fieldCt.fields.push(newFields);
 
                 newField.save().then(() => {
                     return res.status(201).json({

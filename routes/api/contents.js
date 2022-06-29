@@ -9,11 +9,10 @@ router.use(cookieParser());
 
 //CREATE New Content
 router.post("/", async (req, res) => {
-    let { label, value, showAuthor, isPublished, showDate } = req.body;
+    let { contentName, showAuthor, isPublished, showDate } = req.body;
     let userID = req.cookies.userID;
     let tagsArr = req.body.tags.split(", ");
     let ctName = req.body.ctName;
-    let contentName = req.body.contentName;
 
     const foundCtObj = await ContentType.findOne({
         name: ctName,

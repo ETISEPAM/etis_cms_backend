@@ -49,11 +49,7 @@ const contentSchema = new Schema({
     },
     isDeleted: {
         type: Boolean,
-<<<<<<< HEAD
         default: false,
-=======
-        default:false,
->>>>>>> development_irmak
     },
 });
 

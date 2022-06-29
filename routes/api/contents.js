@@ -52,8 +52,7 @@ router.post("/", async (req, res) => {
         );
     }
 });
-    });
-
+  
 
 // List All Contents
 router.get("/", async (req, res) => {
@@ -161,5 +160,22 @@ router.delete("/:id", (req, res) => {
         }
     });
 });
+
+
+
+
+//Filter contents according to tags
+router.get("/tags/:tags", async (req,res)=>{
+    let data = await Content.find(
+        {
+            tags:  req.query.tags
+        }
+    )
+    res.send({
+        data
+    })
+})
+
+
 
 module.exports = router;

@@ -44,10 +44,13 @@ const contentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "users",
     },
-    tags: {
-        type: Array,
-        default: "",
-    },
+    tags: 
+    [
+        {
+          type: String
+        }
+      ]
+    ,
     contentFields: {
         type: {
             label: String,

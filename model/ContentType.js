@@ -8,11 +8,7 @@ const contentTypeSchema = new Schema({
         required: true,
     },
     fields: [
-        {
-            // type: Schema.Types.ObjectId,
-            // ref: "fields",
-        },
-    ],
+           ],
     name: {
         type: String,
         required: true,

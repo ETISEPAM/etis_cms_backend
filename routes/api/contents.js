@@ -136,7 +136,7 @@ router.patch("/:id", async (req, res) => {
             )
         ) {
             res.status(200).json({
-                Message: "GOGOGO",
+                Message: "Success",
             });
         } else {
             versionDecimals[patchIdx]++;
@@ -159,7 +159,7 @@ router.patch("/:id", async (req, res) => {
 
 // Soft delete
 router.patch("/delete/:id", (req, res) => {
-    const contentID = req.params.id;
+    let contentID = req.params.id;
     Content.findByIdAndUpdate(
         contentID,
         {
@@ -179,6 +179,23 @@ router.patch("/delete/:id", (req, res) => {
             }
         }
     );
+});
+
+//DELETE Content
+router.delete("/:id", (req, res) => {
+    let contentID = req.params.id;
+    Content.findByIdAndDelete(contentID, (content) => {
+        if (!content) {
+            res.status(400).json({
+                Message: `Content with the ID: ${contentID} not found!`,
+            });
+        } else {
+            res.status(200).json({
+                Message: `Content with the ID: ${contentID} deleted!`,
+                content,
+            });
+        }
+    });
 });
 //Filter contents according to tags
 router.get("/tags/:tags", async (req, res) => {

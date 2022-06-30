@@ -51,6 +51,7 @@ const contentSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    contentBody: {},
 });
 
 module.exports = Content = mongoose.model("contents", contentSchema);

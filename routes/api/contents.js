@@ -21,21 +21,16 @@ router.post("/", async (req, res) => {
     let uniqueArr = [];
     foundCtObj.fields.forEach((element) => {
         uniqueArr.push(element.isUnique);
-        return element, uniqueArr;
+        return uniqueArr;
     });
-
-    // console.log(foundCtObj.fields);
+    let contentFieldsArr = [];
+    foundCtObj.fields.forEach((contentFields) => {
+        contentFieldsArr.push(contentFields);
+        return contentFieldsArr;
+    });
     const isFound = await Content.findOne({
-        //Content Type'ı oluşturan field'ları kontrol et!
-        //isUnique === true ? ERR : SUCC
-        // TODO: DELETE THIS
         contentName: contentName,
-        // TODO: DELETE THIS
     });
-
-    // if (uniqueArr.includes("true")) {
-    //     res.send("HATA");
-    // }
 
     if (isFound && uniqueArr.includes("true")) {
         res.status(409).json({
@@ -66,6 +61,7 @@ router.post("/", async (req, res) => {
             showAuthor: showAuthor,
             isPublished: isPublished,
             showDate: showDate,
+            contentBody: contentFieldsArr,
             new: true,
         });
 

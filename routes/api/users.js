@@ -126,7 +126,7 @@ router.patch(
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-        User.findOneAndUpdate(
+        User.findByIdAndUpdate(
             id,
             {
                 username: req.body.username,
@@ -157,7 +157,7 @@ router.patch(
 router.delete(
     "/:id",
     /*checkAuth,*/ (req, res) => {
-        User.findOneAndDelete(req.params.id, (err, users) => {
+        User.findByIdAndDelete(req.params.id, (err, users) => {
             if (err || !users) {
                 return res.status(400).json({
                     msg: "User not Found",

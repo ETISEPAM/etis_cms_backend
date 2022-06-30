@@ -9,7 +9,7 @@ router.use(cookieParser());
 
 //CREATE New Content
 router.post("/", async (req, res) => {
-    let { contentName, showAuthor, isPublished, showDate } = req.body;
+    let { contentName, showAuthor, showDate } = req.body;
     let userID = req.cookies.userID;
     let tagsArr = req.body.tags.split(", ");
     let ctName = req.body.ctName;
@@ -17,6 +17,14 @@ router.post("/", async (req, res) => {
     const foundCtObj = await ContentType.findOne({
         name: ctName,
     });
+
+    let uniqueArr = [];
+    foundCtObj.fields.forEach((element) => {
+        uniqueArr.push(element.isUnique);
+        return element, uniqueArr;
+    });
+
+    // console.log(foundCtObj.fields);
     const isFound = await Content.findOne({
         //Content Type'ı oluşturan field'ları kontrol et!
         //isUnique === true ? ERR : SUCC
@@ -25,9 +33,13 @@ router.post("/", async (req, res) => {
         // TODO: DELETE THIS
     });
 
-    if (isFound) {
+    // if (uniqueArr.includes("true")) {
+    //     res.send("HATA");
+    // }
+
+    if (isFound && uniqueArr.includes("true")) {
         res.status(409).json({
-            Message: `Content with the title of '${label}' already exists`,
+            Message: `Field has a unique type! Can't create new content with the same name of ${contentName}`,
         });
     } else {
         //Versioning

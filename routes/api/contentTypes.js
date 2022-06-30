@@ -89,14 +89,13 @@ router.patch("/:id", async (req, res) => {
             message: "Data to update can not be empty",
         });
     }
-    const id = req.params.id;
-    let foundContentType = await ContentType.findById(id);
+    let foundContentType = await ContentType.findById(contentTypeID);
     let fieldsArr = foundContentType.fields;
     fieldsArr.push(newField);
+    console.log(foundContentType);
 
-    //res.json({foundContentType})
-    ContentType.findOneAndUpdate(
-        { id: contentTypeID },
+    ContentType.findByIdAndUpdate(
+        contentTypeID,
         { fields: fieldsArr },
         { new: true }
     ).exec((err, contentType) => {

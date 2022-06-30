@@ -74,8 +74,24 @@ router.get("/:id", async (req, res) => {
 });
 
 // //UPDATE Specific Content-Type by ID
-
 router.patch("/:id", async (req, res) => {
+    let contentTypeID = req.params.id;
+    ContentType.findByIdAndUpdate(contentTypeID, {
+        name: req.body.name,
+        description: req.body.description,
+    }).exec((err, contentType) => {
+        if (contentType) {
+            res.status(200).json(contentType);
+        } else {
+            res.status.apply(404).json({
+                ERR: err.name,
+                ERR_MSG: err.message,
+            });
+        }
+    });
+});
+
+router.patch("/:id/fields", (req, res) => {
     let contentTypeID = req.params.id;
     let newField = {
         label: req.body.label,
@@ -89,7 +105,7 @@ router.patch("/:id", async (req, res) => {
             message: "Data to update can not be empty",
         });
     }
-    let foundContentType = await ContentType.findById(contentTypeID);
+    let foundContentType = ContentType.findById(contentTypeID);
     let fieldsArr = foundContentType.fields;
     fieldsArr.push(newField);
     console.log(foundContentType);
@@ -107,27 +123,27 @@ router.patch("/:id", async (req, res) => {
     });
 });
 
-// //Delete content type according to id
-// router.delete("/:id", async (req, res, next) => {
-//     const id = req.params.id;
-//     ContentType.findByIdAndRemove(id)
-//         .then((data) => {
-//             if (!data) {
-//                 res.status(404).send({
-//                     message: `Cannot delete content type with id =${id}`,
-//                 });
-//             } else {
-//                 res.send({
-//                     message: "Delete is succeed",
-//                     deletedData: data,
-//                 });
-//             }
-//         })
-//         .catch((err) => {
-//             res.status(500).send({
-//                 message: "could not delete content type with id" + id,
-//             });
-//         });
-// });
+//Delete content type according to id
+router.delete("/:id", async (req, res, next) => {
+    const id = req.params.id;
+    ContentType.findByIdAndRemove(id)
+        .then((data) => {
+            if (!data) {
+                res.status(404).send({
+                    message: `Cannot delete content type with id =${id}`,
+                });
+            } else {
+                res.send({
+                    message: "Delete is succeed",
+                    deletedData: data,
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: "could not delete content type with id" + id,
+            });
+        });
+});
 
 module.exports = router;

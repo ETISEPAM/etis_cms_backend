@@ -4,16 +4,13 @@ const User = require("../../model/User");
 const bcrypt = require("bcrypt");
 const { registerValidation } = require("../../utils/validation");
 const { generateToken } = require("../../utils/tokenGen");
+const { getUserID } = require("../../utils/getUserID");
 const checkAuth = require("./middleware/checkAuth");
 const cookieParser = require("cookie-parser");
 
 router.use(cookieParser());
 
-/**
- * @route POST api/users/login
- * @des Signing in the admin
- * @access Public
- */
+//Login User
 router.post("/", async (req, res) => {
     //Checking if the user exists
     const user = await User.findOne({ username: req.body.username });
@@ -23,9 +20,10 @@ router.post("/", async (req, res) => {
             msg: "User Not Found",
             success: "false",
         });
-    //checks pw
+    //Decrypt and check password Match
     bcrypt.compare(req.body.password, user.password).then((isMatch) => {
         if (isMatch) {
+            getUserID(user, res);
             generateToken(user, 200, res);
         } else {
             return res.status(403).json({

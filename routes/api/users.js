@@ -47,7 +47,7 @@ router.post("/registration", async (req, res) => {
     let { username, firstName, lastName, password, email } = req.body;
 
     // Check if this user already exisits
-    let user = await User.findOne({ username: username }).then((user) => {
+    User.findOne({ username: username }).then((user) => {
         if (user) {
             return res.status(409).json({
                 msg: "Username is Already Taken",
@@ -64,18 +64,25 @@ router.post("/registration", async (req, res) => {
 
     //Password Hashing
     bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-            //Add New User
-            if (err) throw err;
-            newUser.password = hash;
-            newUser.save().then((user) => {
-                return res.status(201).json({
-                    newUser,
-                    success: true,
-                    msg: "User Successfully Added!",
+        if (err) {
+            res.status(400).json({
+                ERR: err.name,
+                ERR_MSG: err.message,
+            });
+        } else {
+            bcrypt.hash(newUser.password, salt, async (err, hash) => {
+                //Add New User
+                if (err) throw err;
+                newUser.password = hash;
+                newUser.save().then(() => {
+                    res.status(201).json({
+                        newUser,
+                        success: true,
+                        msg: "User Successfully Added!",
+                    });
                 });
             });
-        });
+        }
     });
 });
 
@@ -86,8 +93,7 @@ router.get("/", async (req, res) => {
     // execute query with page and limit values
     const users = await User.find()
         .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .exec();
+        .skip((page - 1) * limit);
 
     // get total documents in the Posts collection
     const count = User.countDocuments();
@@ -119,13 +125,13 @@ router.get("/:id", async (req, res) => {
 router.patch(
     "/:id",
     /*checkAuth,*/ async (req, res) => {
-        const id = req.cookies.userID;
-        //hash the password for update
+        const userID = req.params.id;
+        //Hash The Password For Update
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(req.body.password, salt);
 
         User.findByIdAndUpdate(
-            id,
+            userID,
             {
                 username: req.body.username,
                 firstName: req.body.firstName,
@@ -133,21 +139,19 @@ router.patch(
                 email: req.body.email,
                 password: hashPassword,
             },
-
-            { new: true },
-            (err, user) => {
-                if (err || !user) {
-                    return res.status(400).json({
-                        msg: "User not Found",
-                    });
-                } else {
-                    return res.status(200).json({
-                        user,
-                        msg: "User Updated Successfully!",
-                    });
-                }
+            { new: true }
+        ).exec((err, user) => {
+            if (err) {
+                res.status(400).json({
+                    msg: "User not Found",
+                });
+            } else {
+                res.status(200).json({
+                    user,
+                    msg: "User Updated Successfully!",
+                });
             }
-        );
+        });
     }
 );
 
@@ -169,8 +173,8 @@ router.delete(
     }
 );
 
-//Get the content type with specific id
-router.get("/:id", async (req, res, next) => {
+//Get User With Specific ID
+router.get("/:id", async (req, res) => {
     const id = req.params.id;
     User.findById(id)
         .then((data) => {
@@ -181,9 +185,7 @@ router.get("/:id", async (req, res, next) => {
             } else res.send(data);
         })
         .catch((err) => {
-            res.status(500).send(
-                { message: "Error while retrieving the user with id" } + id
-            );
+            res.status(400).send({ message: err.message });
         });
 });
 

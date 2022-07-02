@@ -173,20 +173,4 @@ router.delete(
     }
 );
 
-//Get User With Specific ID
-router.get("/:id", async (req, res) => {
-    const id = req.params.id;
-    User.findById(id)
-        .then((data) => {
-            if (!data) {
-                res.status(404).send({
-                    message: "Not found user with id" + id,
-                });
-            } else res.send(data);
-        })
-        .catch((err) => {
-            res.status(400).send({ message: err.message });
-        });
-});
-
 module.exports = router;

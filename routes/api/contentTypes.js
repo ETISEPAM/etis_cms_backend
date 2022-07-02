@@ -11,7 +11,7 @@ router.use(cookieParser());
 router.post("/", async (req, res) => {
     let { name, description } = req.body;
     let userID = req.cookies.userID;
-    let labelName = req.body.labelName;
+    // let labelName = req.body.labelName;
 
     await ContentType.findOne({ name: name }).then((contentType) => {
         if (contentType) {
@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
                 name: req.body.name,
                 description: req.body.description,
                 ownerInfo: userID,
-                fields: [],
+                // fields: [],
             });
             newContentType.save().then(() => {
                 return res.status(201).json({
@@ -93,34 +93,34 @@ router.patch("/:id", async (req, res) => {
 
 router.patch("/:id/fields", (req, res) => {
     let contentTypeID = req.params.id;
-    let newField = {
-        label: req.body.label,
-        isMandatory: req.body.isMandatory,
-        isUnique: req.body.isUnique,
-        dataType: req.body.dataType,
-    };
+    // let newField = {
+    //     label: req.body.label,
+    //     isMandatory: req.body.isMandatory,
+    //     isUnique: req.body.isUnique,
+    //     dataType: req.body.dataType,
+    // };
 
-    if (!req.body) {
-        return res.status(400).send({
-            message: "Data to update can not be empty",
-        });
-    }
-    let foundContentType = ContentType.findById(contentTypeID);
-    let fieldsArr = foundContentType.fields;
-    fieldsArr.push(newField);
-    console.log(foundContentType);
+    // if (!req.body) {
+    //     return res.status(400).send({
+    //         message: "Data to update can not be empty",
+    //     });
+    // }
+    // let foundContentType = ContentType.findById(contentTypeID);
+    // let fieldsArr = foundContentType.fields;
+    // fieldsArr.push(newField);
+    // console.log(foundContentType);
 
-    ContentType.findByIdAndUpdate(
-        contentTypeID,
-        { fields: fieldsArr },
-        { new: true }
-    ).exec((err, contentType) => {
-        if (contentType) {
-            res.status(200).json({ contentType });
-        } else {
-            res.status(404).json({ err: err.message });
-        }
-    });
+    // ContentType.findByIdAndUpdate(
+    //     contentTypeID,
+    //     { fields: fieldsArr },
+    //     { new: true }
+    // ).exec((err, contentType) => {
+    //     if (contentType) {
+    //         res.status(200).json({ contentType });
+    //     } else {
+    //         res.status(404).json({ err: err.message });
+    //     }
+    // });
 });
 
 //Delete content type according to id

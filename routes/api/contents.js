@@ -14,25 +14,25 @@ router.post("/", async (req, res) => {
     let tagsArr = req.body.tags.split(", ");
     let ctName = req.body.ctName;
 
-    const foundCtObj = await ContentType.findOne({
-        name: ctName,
-    });
+    // const foundCtObj = await ContentType.findOne({
+    //     name: ctName,
+    // });
 
-    let uniqueArr = [];
-    foundCtObj.fields.forEach((element) => {
-        uniqueArr.push(element.isUnique);
-        return uniqueArr;
-    });
-    let contentFieldsArr = [];
-    foundCtObj.fields.forEach((contentFields) => {
-        contentFieldsArr.push(contentFields);
-        return contentFieldsArr;
-    });
+    // let uniqueArr = [];
+    // foundCtObj.fields.forEach((element) => {
+    //     uniqueArr.push(element.isUnique);
+    //     return uniqueArr;
+    // });
+    // let contentFieldsArr = [];
+    // foundCtObj.fields.forEach((contentFields) => {
+    //     contentFieldsArr.push(contentFields);
+    //     return contentFieldsArr;
+    // });
     const isFound = await Content.findOne({
         contentName: contentName,
     });
 
-    if (isFound && uniqueArr.includes("true")) {
+    if (isFound /*&& uniqueArr.includes("true")*/) {
         res.status(409).json({
             Message: `Field has a unique type! Can't create new content with the same name of ${contentName}`,
         });

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ContentType = require("../../model/ContentType");
+const Fields = require("../../model/Field");
 const checkAuth = require("./middleware/checkAuth");
 
 const cookieParser = require("cookie-parser");
@@ -11,7 +12,6 @@ router.use(cookieParser());
 router.post("/", async (req, res) => {
     let { name, description } = req.body;
     let userID = req.cookies.userID;
-    // let labelName = req.body.labelName;
 
     await ContentType.findOne({ name: name }).then((contentType) => {
         if (contentType) {
@@ -23,7 +23,6 @@ router.post("/", async (req, res) => {
                 name: req.body.name,
                 description: req.body.description,
                 ownerInfo: userID,
-                // fields: [],
             });
             newContentType.save().then(() => {
                 return res.status(201).json({
@@ -81,9 +80,9 @@ router.patch("/:id", async (req, res) => {
         description: req.body.description,
     }).exec((err, contentType) => {
         if (contentType) {
-            res.status(200).json(contentType);
+            res.status(200).json({ contentType });
         } else {
-            res.status.apply(404).json({
+            res.status(404).json({
                 ERR: err.name,
                 ERR_MSG: err.message,
             });
@@ -91,36 +90,23 @@ router.patch("/:id", async (req, res) => {
     });
 });
 
-router.patch("/:id/fields", (req, res) => {
+//UPDATE Fields of a Specific ContentType
+router.patch("/:id/fields", async (req, res) => {
     let contentTypeID = req.params.id;
-    // let newField = {
-    //     label: req.body.label,
-    //     isMandatory: req.body.isMandatory,
-    //     isUnique: req.body.isUnique,
-    //     dataType: req.body.dataType,
-    // };
-
-    // if (!req.body) {
-    //     return res.status(400).send({
-    //         message: "Data to update can not be empty",
-    //     });
-    // }
-    // let foundContentType = ContentType.findById(contentTypeID);
-    // let fieldsArr = foundContentType.fields;
-    // fieldsArr.push(newField);
-    // console.log(foundContentType);
-
-    // ContentType.findByIdAndUpdate(
-    //     contentTypeID,
-    //     { fields: fieldsArr },
-    //     { new: true }
-    // ).exec((err, contentType) => {
-    //     if (contentType) {
-    //         res.status(200).json({ contentType });
-    //     } else {
-    //         res.status(404).json({ err: err.message });
-    //     }
-    // });
+    let fieldName = req.body.fieldName;
+    let foundField = Fields.findOne({ name: fieldName });
+    ContentType.findByIdAndUpdate(contentTypeID, {
+        fields: foundField,
+    }).exec((err, contentType) => {
+        if (contentType) {
+            res.status(200).json({ contentType });
+        } else {
+            res.status(400).json({
+                ERR: err.name,
+                ERR_MSG: err.message,
+            });
+        }
+    });
 });
 
 //Delete content type according to id

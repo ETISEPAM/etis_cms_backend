@@ -14,9 +14,16 @@ router.post("/", async (req, res) => {
     let tagsArr = req.body.tags.split(", ");
     let ctName = req.body.ctName;
 
-    // const foundCtObj = await ContentType.findOne({
-    //     name: ctName,
-    // });
+    const foundCtObj = await ContentType.findOne({
+        name: ctName,
+    });
+
+    let contentFieldVals = foundCtObj.fields.map((vals) => {
+        (vals.label = req.body.fieldLabel), (vals.value = req.body.fieldVal);
+        return vals;
+    });
+    console.log(foundCtObj);
+    console.log(contentFieldVals);
 
     // let uniqueArr = [];
     // foundCtObj.fields.forEach((element) => {
@@ -28,51 +35,54 @@ router.post("/", async (req, res) => {
     //     contentFieldsArr.push(contentFields);
     //     return contentFieldsArr;
     // });
-    const isFound = await Content.findOne({
+    // const isFound = await Content.findOne({
+    //     contentName: contentName,
+    // });
+
+    // // if (isFound /*&& uniqueArr.includes("true")*/) {
+    // //     res.status(409).json({
+    // //         Message: `Field has a unique type! Can't create new content with the same name of ${contentName}`,
+    // //     });
+    // // }
+    // console.log(isFound);
+    // if (isFound) {
+
+    //Versioning
+    let majorIdx = 0;
+    let minorIdx = 1;
+    let patchIdx = 2;
+    let firstVersion = "0.0.0";
+    let versionDecimals = firstVersion.split(".");
+    //Update Major Version if Published
+    let isPublished = req.body.isPublished;
+    if (isPublished === "true") {
+        versionDecimals[majorIdx]++;
+        currentVersion = versionDecimals.join(".");
+        ("1.0.0");
+    } else {
+        currentVersion = firstVersion;
+    }
+    const newContent = new Content({
         contentName: contentName,
+        ctInfo: foundCtObj,
+        ownerInfo: userID,
+        tags: tagsArr,
+        version: currentVersion,
+        showAuthor: showAuthor,
+        isPublished: isPublished,
+        showDate: showDate,
+        contentFieldValues: contentFieldVals,
+        new: true,
     });
 
-    if (isFound /*&& uniqueArr.includes("true")*/) {
-        res.status(409).json({
-            Message: `Field has a unique type! Can't create new content with the same name of ${contentName}`,
-        });
-    } else {
-        //Versioning
-        let majorIdx = 0;
-        let minorIdx = 1;
-        let patchIdx = 2;
-        let firstVersion = "0.0.0";
-        let versionDecimals = firstVersion.split(".");
-        //Update Major Version if Published
-        let isPublished = req.body.isPublished;
-        if (isPublished === "true") {
-            versionDecimals[majorIdx]++;
-            currentVersion = versionDecimals.join(".");
-            ("1.0.0");
-        } else {
-            currentVersion = firstVersion;
-        }
-        const newContent = new Content({
-            contentName: contentName,
-            ctInfo: foundCtObj,
-            ownerInfo: userID,
-            tags: tagsArr,
-            version: currentVersion,
-            showAuthor: showAuthor,
-            isPublished: isPublished,
-            showDate: showDate,
-            contentBody: contentFieldsArr,
-            new: true,
-        });
-
-        await newContent.save().then(
-            res.status(201).json({
-                Status: res.status,
-                Message: `New Content Created`,
-                newContent,
-            })
-        );
-    }
+    await newContent.save().then(
+        res.status(201).json({
+            Status: res.status,
+            Message: `New Content Created`,
+            newContent,
+        })
+    );
+    // }
 });
 
 //READ All Contents

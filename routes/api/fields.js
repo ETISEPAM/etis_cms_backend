@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Field = require("../../model/Fields");
+const Field = require("../../model/Field");
 const DataType = require("../../model/DataType");
 const checkAuth = require("./middleware/checkAuth");
 
@@ -20,12 +20,14 @@ router.get("/", async (req, res) => {
 
 //Create New Field
 router.post("/", async (req, res) => {
-    let { label, minValue, maxValue, isMandatory, isUnique } = req.body;
+    let { name, minValue, defaultValue, maxValue, isMandatory, isUnique } =
+        req.body;
     let dataType = await DataType.find({ name: req.body.dataType });
 
     let newField = new Field({
-        label: label,
+        name: name,
         dataType: dataType,
+        defaultValue: defaultValue,
         minValue: minValue,
         maxValue: maxValue,
         isMandatory: isMandatory,

@@ -49,8 +49,9 @@ const contentSchema = new Schema({
     },
     isDeleted: {
         type: Boolean,
-        default:false,
+        default: false,
     },
+    contentFieldValues: {},
 });
 
 module.exports = Content = mongoose.model("contents", contentSchema);

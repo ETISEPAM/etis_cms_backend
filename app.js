@@ -6,8 +6,10 @@ const cors = require("cors");
 
 // Require Routes
 const users = require("./routes/api/users");
-const contentType = require("./routes/api/contentTypes");
+const contentTypes = require("./routes/api/contentTypes");
 const contents = require("./routes/api/contents");
+const dataTypes = require("./routes/api/dataTypes");
+const fields = require("./routes/api/fields");
 
 // initialize the app
 const app = express();
@@ -21,8 +23,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/api/users", users);
-app.use("/api/contentTypes", contentType);
+app.use("/api/contentTypes", contentTypes);
 app.use("/api/contents", contents);
+app.use("/api/dataTypes", dataTypes);
+app.use("/api/fields", fields);
 
 //Database Configuration
 const db = mongoose.connection;
@@ -43,5 +47,3 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
 });
-
-

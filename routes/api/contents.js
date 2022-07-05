@@ -9,64 +9,80 @@ router.use(cookieParser());
 
 //CREATE New Content
 router.post("/", async (req, res) => {
-    let { label, value, showAuthor, isPublished, showDate } = req.body;
+    let { contentName, showAuthor, showDate } = req.body;
     let userID = req.cookies.userID;
     let tagsArr = req.body.tags.split(", ");
     let ctName = req.body.ctName;
-    let contentName = req.body.contentName;
 
     const foundCtObj = await ContentType.findOne({
         name: ctName,
     });
-    const isFound = await Content.findOne({
-        //Content Type'ı oluşturan field'ları kontrol et!
-        //isUnique === true ? ERR : SUCC
-        // TODO: DELETE THIS
+
+    let contentFieldVals = foundCtObj.fields.map((vals) => {
+        (vals.label = req.body.fieldLabel), (vals.value = req.body.fieldVal);
+        return vals;
+    });
+    console.log(foundCtObj);
+    console.log(contentFieldVals);
+
+    // let uniqueArr = [];
+    // foundCtObj.fields.forEach((element) => {
+    //     uniqueArr.push(element.isUnique);
+    //     return uniqueArr;
+    // });
+    // let contentFieldsArr = [];
+    // foundCtObj.fields.forEach((contentFields) => {
+    //     contentFieldsArr.push(contentFields);
+    //     return contentFieldsArr;
+    // });
+    // const isFound = await Content.findOne({
+    //     contentName: contentName,
+    // });
+
+    // // if (isFound /*&& uniqueArr.includes("true")*/) {
+    // //     res.status(409).json({
+    // //         Message: `Field has a unique type! Can't create new content with the same name of ${contentName}`,
+    // //     });
+    // // }
+    // console.log(isFound);
+    // if (isFound) {
+
+    //Versioning
+    let majorIdx = 0;
+    let minorIdx = 1;
+    let patchIdx = 2;
+    let firstVersion = "0.0.0";
+    let versionDecimals = firstVersion.split(".");
+    //Update Major Version if Published
+    let isPublished = req.body.isPublished;
+    if (isPublished === "true") {
+        versionDecimals[majorIdx]++;
+        currentVersion = versionDecimals.join(".");
+        ("1.0.0");
+    } else {
+        currentVersion = firstVersion;
+    }
+    const newContent = new Content({
         contentName: contentName,
-        // TODO: DELETE THIS
+        ctInfo: foundCtObj,
+        ownerInfo: userID,
+        tags: tagsArr,
+        version: currentVersion,
+        showAuthor: showAuthor,
+        isPublished: isPublished,
+        showDate: showDate,
+        contentFieldValues: contentFieldVals,
+        new: true,
     });
 
-    if (isFound) {
-        res.status(409).json({
-            Message: `Content with the title of '${label}' already exists`,
-        });
-    } else {
-        //Versioning
-        let majorIdx = 0;
-        let minorIdx = 1;
-        let patchIdx = 2;
-        let firstVersion = "0.0.0";
-        let versionDecimals = firstVersion.split(".");
-        [0, 0, 0];
-        //Update Major Version if Published
-        let isPublished = req.body.isPublished;
-        if (isPublished === "true") {
-            versionDecimals[majorIdx]++;
-            currentVersion = versionDecimals.join(".");
-            ("1.0.0");
-        } else {
-            currentVersion = firstVersion;
-        }
-        const newContent = new Content({
-            contentName: contentName,
-            ctInfo: foundCtObj,
-            ownerInfo: userID,
-            tags: tagsArr,
-            version: currentVersion,
-            showAuthor: showAuthor,
-            isPublished: isPublished,
-            showDate: showDate,
-            new: true,
-        });
-
-        await newContent.save().then(
-            res.status(201).json({
-                Status: res.status,
-                Message: `New Content Created`,
-                newContent,
-            })
-        );
-    }
+    await newContent.save().then(
+        res.status(201).json({
+            Status: res.status,
+            Message: `New Content Created`,
+            newContent,
+        })
+    );
+    // }
 });
 
 //READ All Contents
@@ -130,7 +146,7 @@ router.patch("/:id", async (req, res) => {
             )
         ) {
             res.status(200).json({
-                Message: "GOGOGO",
+                Message: "Success",
             });
         } else {
             versionDecimals[patchIdx]++;
@@ -153,7 +169,7 @@ router.patch("/:id", async (req, res) => {
 
 // Soft delete
 router.patch("/delete/:id", (req, res) => {
-    const contentID = req.params.id;
+    let contentID = req.params.id;
     Content.findByIdAndUpdate(
         contentID,
         {
@@ -173,6 +189,23 @@ router.patch("/delete/:id", (req, res) => {
             }
         }
     );
+});
+
+//DELETE Content
+router.delete("/:id", (req, res) => {
+    let contentID = req.params.id;
+    Content.findByIdAndDelete(contentID, (content) => {
+        if (!content) {
+            res.status(400).json({
+                Message: `Content with the ID: ${contentID} not found!`,
+            });
+        } else {
+            res.status(200).json({
+                Message: `Content with the ID: ${contentID} deleted!`,
+                content,
+            });
+        }
+    });
 });
 //Filter contents according to tags
 router.get("/tags/:tags", async (req, res) => {
